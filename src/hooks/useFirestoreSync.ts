@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useFinanceStore } from '../store/financeStore';
 import { useAuth } from './useAuth';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
@@ -7,11 +7,15 @@ import { db } from '../lib/firebase';
 export function useFirestoreSync() {
     const { user } = useAuth();
     const { transactions, assets, goals, subscriptions, currency, importData } = useFinanceStore();
+    const [isInitialized, setIsInitialized] = useState(false);
 
     // Load data from Firestore on login
     useEffect(() => {
         async function loadData() {
-            if (!user) return;
+            if (!user) {
+                setIsInitialized(false);
+                return;
+            }
 
             try {
                 const docRef = doc(db, 'users', user.uid);
@@ -19,8 +23,6 @@ export function useFirestoreSync() {
 
                 if (docSnap.exists()) {
                     const data = docSnap.data();
-                    // We can reuse importData or set state directly. 
-                    // importData expects a JSON string, so let's stringify it.
                     importData(JSON.stringify(data));
                     console.log("Data loaded from Firestore");
                 } else {
@@ -28,6 +30,8 @@ export function useFirestoreSync() {
                 }
             } catch (error) {
                 console.error("Error loading data from Firestore:", error);
+            } finally {
+                setIsInitialized(true);
             }
         }
 
@@ -36,7 +40,7 @@ export function useFirestoreSync() {
 
     // Sync data to Firestore on change
     useEffect(() => {
-        if (!user) return;
+        if (!user || !isInitialized) return;
 
         const saveData = async () => {
             try {
@@ -55,10 +59,8 @@ export function useFirestoreSync() {
             }
         };
 
-        // Debounce could be added here, but for now we'll rely on React's batching 
-        // and the fact that these change relatively infrequently.
         const timeoutId = setTimeout(saveData, 1000);
 
         return () => clearTimeout(timeoutId);
-    }, [user, transactions, assets, goals, subscriptions, currency]);
+    }, [user, isInitialized, transactions, assets, goals, subscriptions, currency]);
 }
