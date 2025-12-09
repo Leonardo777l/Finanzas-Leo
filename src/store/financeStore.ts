@@ -11,10 +11,14 @@ export const useFinanceStore = create<AppState>()(
             subscriptions: [],
             currency: 'MXN',
             userId: null,
+            syncStatus: 'offline',
+            syncError: null,
 
             setUserId: (uid) => {
                 set({ userId: uid });
             },
+
+            setSyncStatus: (status, error = null) => set({ syncStatus: status, syncError: error }),
 
             addTransaction: (transaction) =>
                 set((state) => ({
@@ -106,6 +110,7 @@ export const useFinanceStore = create<AppState>()(
                 subscriptions: state.subscriptions,
                 currency: state.currency,
                 // Don't persist userId to avoid issues with stale auth states
+                // Don't persist sync status
             } as AppState),
         }
     )

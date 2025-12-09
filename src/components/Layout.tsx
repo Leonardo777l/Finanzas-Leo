@@ -3,6 +3,7 @@ import { LayoutDashboard, Calendar, Wallet, TrendingUp, Settings, Menu, X, Targe
 import { cn } from '../lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
+import { SyncStatus } from './SyncStatus';
 
 interface LayoutProps {
     children: ReactNode;
@@ -31,7 +32,8 @@ export function Layout({ children, activeTab, onTabChange }: LayoutProps) {
                     <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent tracking-tighter">
                         FinDash
                     </h1>
-                    <p className="text-xs text-muted-foreground mt-1">Gestor Financiero Premium</p>
+                    <p className="text-xs text-muted-foreground mt-1 mb-4">Gestor Financiero Premium</p>
+                    <SyncStatus />
                 </div>
 
                 <nav className="space-y-2 flex-1">
@@ -77,9 +79,12 @@ export function Layout({ children, activeTab, onTabChange }: LayoutProps) {
             {/* Mobile Header & Main Content */}
             <div className="flex-1 flex flex-col min-w-0 relative z-0">
                 <header className="md:hidden h-16 border-b border-white/10 flex items-center justify-between px-4 bg-black/20 backdrop-blur-md sticky top-0 z-50">
-                    <h1 className="text-xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-                        FinDash
-                    </h1>
+                    <div className="flex items-center gap-2">
+                        <h1 className="text-xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                            FinDash
+                        </h1>
+                        <SyncStatus />
+                    </div>
                     <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="p-2">
                         {isMobileMenuOpen ? <X /> : <Menu />}
                     </button>

@@ -71,4 +71,7 @@ export interface AppState {
     exportData: () => string;
     importData: (json: string) => void;
     setUserId: (uid: string | null) => void;
+    syncStatus: 'synced' | 'syncing' | 'error' | 'offline';
+    syncError: string | null;
+    setSyncStatus: (status: 'synced' | 'syncing' | 'error' | 'offline', error?: string | null) => void;
 }
