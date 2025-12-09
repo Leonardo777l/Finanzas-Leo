@@ -4,7 +4,7 @@ import { format, startOfMonth, endOfMonth, isWithinInterval, parseISO, subMonths
 import { es } from 'date-fns/locale';
 import { motion } from 'framer-motion';
 import { PieChart, ChevronLeft, ChevronRight, Wallet, Shield, Heart, Banknote, Landmark, AlertTriangle, CheckCircle2 } from 'lucide-react';
-import { Card } from '../components/ui/Card';
+import { GlassCard as Card } from '../components/ui/GlassCard';
 import { formatCurrency } from '../lib/utils';
 import { clsx } from 'clsx';
 
