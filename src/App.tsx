@@ -5,7 +5,6 @@ import { MonthlyPlanner } from './pages/MonthlyPlanner';
 import { Portfolio } from './pages/Portfolio';
 import { CashFlow } from './pages/CashFlow';
 import { Goals } from './pages/Goals';
-import { Goals } from './pages/Goals';
 import { Subscriptions } from './pages/Subscriptions';
 import { CalendarView } from './pages/CalendarView';
 import { Distribution } from './pages/Distribution';
