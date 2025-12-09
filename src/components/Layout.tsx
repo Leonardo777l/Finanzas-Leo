@@ -1,9 +1,10 @@
 import { type ReactNode } from 'react';
-import { LayoutDashboard, Calendar, Wallet, TrendingUp, Settings, Menu, X, Target, CreditCard, CalendarDays } from 'lucide-react';
+import { LayoutDashboard, Calendar, Wallet, TrendingUp, Settings, Menu, X, Target, CreditCard, CalendarDays, LogOut } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
 import { SyncStatus } from './SyncStatus';
+import { useAuth } from '../hooks/useAuth';
 
 interface LayoutProps {
     children: ReactNode;
@@ -13,6 +14,7 @@ interface LayoutProps {
 
 export function Layout({ children, activeTab, onTabChange }: LayoutProps) {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const { logout } = useAuth();
 
     const navItems = [
         { id: 'dashboard', label: 'Panel Principal', icon: LayoutDashboard },
@@ -68,10 +70,17 @@ export function Layout({ children, activeTab, onTabChange }: LayoutProps) {
                     })}
                 </nav>
 
-                <div className="mt-auto pt-6 border-t border-white/10">
+                <div className="mt-auto pt-6 border-t border-white/10 space-y-2">
                     <button className="w-full flex items-center gap-4 px-4 py-3 rounded-xl hover:bg-white/5 text-muted-foreground hover:text-white transition-all">
                         <Settings size={22} />
                         <span className="font-medium">Configuración</span>
+                    </button>
+                    <button
+                        onClick={logout}
+                        className="w-full flex items-center gap-4 px-4 py-3 rounded-xl hover:bg-red-500/10 text-muted-foreground hover:text-red-400 transition-all"
+                    >
+                        <LogOut size={22} />
+                        <span className="font-medium">Cerrar Sesión</span>
                     </button>
                 </div>
             </aside>
@@ -116,6 +125,18 @@ export function Layout({ children, activeTab, onTabChange }: LayoutProps) {
                                         {item.label}
                                     </button>
                                 ))}
+                                <div className="pt-4 mt-4 border-t border-white/10">
+                                    <button
+                                        onClick={() => {
+                                            logout();
+                                            setIsMobileMenuOpen(false);
+                                        }}
+                                        className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-red-400 hover:bg-red-500/10"
+                                    >
+                                        <LogOut size={20} />
+                                        Cerrar Sesión
+                                    </button>
+                                </div>
                             </nav>
                         </motion.div>
                     )}
