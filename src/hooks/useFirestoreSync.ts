@@ -28,8 +28,11 @@ export function useFirestoreSync() {
                 } else {
                     console.log("No data found in Firestore, starting fresh.");
                 }
-            } catch (error) {
+            } catch (error: any) {
                 console.error("Error loading data from Firestore:", error);
+                if (error.code === 'permission-denied') {
+                    console.error("PERMISSION DENIED: Check your Firestore Security Rules in the Firebase Console.");
+                }
             } finally {
                 setIsInitialized(true);
             }
@@ -54,8 +57,11 @@ export function useFirestoreSync() {
                     lastUpdated: new Date().toISOString()
                 }, { merge: true });
                 console.log("Data synced to Firestore");
-            } catch (error) {
+            } catch (error: any) {
                 console.error("Error syncing data to Firestore:", error);
+                if (error.code === 'permission-denied') {
+                    console.error("PERMISSION DENIED: Check your Firestore Security Rules in the Firebase Console.");
+                }
             }
         };
 
