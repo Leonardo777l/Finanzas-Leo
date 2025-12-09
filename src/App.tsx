@@ -6,7 +6,9 @@ import { Portfolio } from './pages/Portfolio';
 import { CashFlow } from './pages/CashFlow';
 import { Goals } from './pages/Goals';
 import { Subscriptions } from './pages/Subscriptions';
+import { Subscriptions } from './pages/Subscriptions';
 import { CalendarView } from './pages/CalendarView';
+import { Distribution } from './pages/Distribution';
 import { LoginPage } from './pages/LoginPage';
 import { useAuth } from './hooks/useAuth';
 import { useFinanceStore } from './store/financeStore';
@@ -51,6 +53,7 @@ function App() {
       {activeTab === 'cashflow' && <CashFlow />}
       {activeTab === 'goals' && <Goals />}
       {activeTab === 'subscriptions' && <Subscriptions />}
+      {activeTab === 'distribution' && <Distribution />}
     </Layout>
   );
 }

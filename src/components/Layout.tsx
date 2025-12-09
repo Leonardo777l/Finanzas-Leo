@@ -1,5 +1,5 @@
 import { type ReactNode } from 'react';
-import { LayoutDashboard, Calendar, Wallet, TrendingUp, Settings, Menu, X, Target, CreditCard, CalendarDays, LogOut } from 'lucide-react';
+import { LayoutDashboard, Calendar, Wallet, TrendingUp, Settings, Menu, X, Target, CreditCard, CalendarDays, LogOut, PieChart } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
@@ -24,6 +24,7 @@ export function Layout({ children, activeTab, onTabChange }: LayoutProps) {
         { id: 'goals', label: 'Metas', icon: Target },
         { id: 'subscriptions', label: 'Suscripciones', icon: CreditCard },
         { id: 'cashflow', label: 'Flujo de Caja', icon: TrendingUp },
+        { id: 'distribution', label: 'Distribución', icon: PieChart },
     ];
 
     return (
