@@ -1,5 +1,5 @@
 import { type ReactNode } from 'react';
-import { LayoutDashboard, Calendar, Wallet, TrendingUp, Settings, Menu, X, Target, CreditCard, CalendarDays, LogOut, PieChart } from 'lucide-react';
+import { LayoutDashboard, Banknote, Wallet, TrendingUp, Settings, Menu, X, Target, CreditCard, CalendarDays, LogOut, PieChart } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
@@ -18,7 +18,7 @@ export function Layout({ children, activeTab, onTabChange }: LayoutProps) {
 
     const navItems = [
         { id: 'dashboard', label: 'Panel Principal', icon: LayoutDashboard },
-        { id: 'planner', label: 'Planeador Mensual', icon: Calendar },
+        { id: 'income', label: 'Ingreso', icon: Banknote },
         { id: 'calendar', label: 'Calendario', icon: CalendarDays },
         { id: 'portfolio', label: 'Inversiones', icon: Wallet },
         { id: 'goals', label: 'Metas', icon: Target },

@@ -2,15 +2,17 @@ import { useState, useMemo } from 'react';
 import { useFinanceStore } from '../store/financeStore';
 import { format, startOfMonth, endOfMonth, isWithinInterval, parseISO, subMonths, addMonths } from 'date-fns';
 import { es } from 'date-fns/locale';
-import { motion } from 'framer-motion';
-import { PieChart, ChevronLeft, ChevronRight, Wallet, Shield, Heart, Banknote, Landmark, AlertTriangle, CheckCircle2 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { PieChart, ChevronLeft, ChevronRight, Wallet, Shield, Heart, Banknote, Landmark, AlertTriangle, CheckCircle2, Plus, X, Gamepad2, UserCircle } from 'lucide-react';
 import { GlassCard as Card } from '../components/ui/GlassCard';
 import { formatCurrency } from '../lib/utils';
 import { clsx } from 'clsx';
+import { cn } from '../lib/utils';
 
 export function Distribution() {
-    const { transactions, currency } = useFinanceStore();
+    const { transactions, currency, addTransactions } = useFinanceStore();
     const [currentDate, setCurrentDate] = useState(new Date());
+    const [isIncomeModalOpen, setIsIncomeModalOpen] = useState(false);
 
     const stats = useMemo(() => {
         const start = startOfMonth(currentDate);
@@ -29,13 +31,18 @@ export function Distribution() {
             .filter((t) => t.type === 'expense')
             .reduce((sum, t) => sum + t.amount, 0);
 
-        // Distribution Model: 50% / 20% / 10% / 10% / 10%
+        // New Distribution Model:
+        // 50% - Gasto Corriente (Base)
+        // 15% - Ahorro
+        // 15% - OCIO
+        // 10% - LEO
+        // 10% - FER
         const plan = {
-            fixedExpenses: totalIncome * 0.50, // 50% - Gastos Fijos (Realmente para todos los gastos)
-            dividends: totalIncome * 0.20,     // 20% - Dividendos
-            savings: totalIncome * 0.10,       // 10% - Ahorro
-            safeBox: totalIncome * 0.10,       // 10% - Caja Fuerte
-            tithe: totalIncome * 0.10,         // 10% - Diezmo
+            currentExpenses: totalIncome * 0.50, // 50%
+            savings: totalIncome * 0.15,         // 15%
+            leisure: totalIncome * 0.15,         // 15% - OCIO
+            leo: totalIncome * 0.10,             // 10%
+            fer: totalIncome * 0.10,             // 10%
         };
 
         const expenses = monthlyTransactions.filter(t => t.type === 'expense');
@@ -53,7 +60,7 @@ export function Distribution() {
     };
 
     return (
-        <div className="space-y-8 animate-in fade-in duration-500">
+        <div className="space-y-8 animate-in fade-in duration-500 relative">
             {/* Header & Month Selector */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
@@ -61,26 +68,36 @@ export function Distribution() {
                         Distribución de Ingresos
                     </h2>
                     <p className="text-muted-foreground mt-1">
-                        Modelo 50/20/10/10/10 para auditoría financiera
+                        Modelo 50/15/15/10/10 - Gasto / Ahorro / Ocio / Leo / Fer
                     </p>
                 </div>
 
-                <div className="flex items-center bg-white/5 rounded-xl border border-white/10 p-1">
+                <div className="flex gap-4">
                     <button
-                        onClick={() => navigateMonth('prev')}
-                        className="p-2 hover:bg-white/10 rounded-lg transition-colors text-muted-foreground hover:text-white"
+                        onClick={() => setIsIncomeModalOpen(true)}
+                        className="flex items-center gap-2 px-4 py-2 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-xl hover:bg-emerald-500/20 transition-colors"
                     >
-                        <ChevronLeft size={20} />
+                        <Plus size={18} />
+                        Registrar Ingreso
                     </button>
-                    <span className="w-40 text-center font-medium capitalize">
-                        {format(currentDate, 'MMMM yyyy', { locale: es })}
-                    </span>
-                    <button
-                        onClick={() => navigateMonth('next')}
-                        className="p-2 hover:bg-white/10 rounded-lg transition-colors text-muted-foreground hover:text-white"
-                    >
-                        <ChevronRight size={20} />
-                    </button>
+
+                    <div className="flex items-center bg-white/5 rounded-xl border border-white/10 p-1">
+                        <button
+                            onClick={() => navigateMonth('prev')}
+                            className="p-2 hover:bg-white/10 rounded-lg transition-colors text-muted-foreground hover:text-white"
+                        >
+                            <ChevronLeft size={20} />
+                        </button>
+                        <span className="w-40 text-center font-medium capitalize">
+                            {format(currentDate, 'MMMM yyyy', { locale: es })}
+                        </span>
+                        <button
+                            onClick={() => navigateMonth('next')}
+                            className="p-2 hover:bg-white/10 rounded-lg transition-colors text-muted-foreground hover:text-white"
+                        >
+                            <ChevronRight size={20} />
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -105,62 +122,43 @@ export function Distribution() {
                     <div className="flex items-center justify-between mb-6">
                         <h3 className="font-semibold text-lg flex items-center gap-2">
                             <PieChart className="text-purple-400" size={20} />
-                            Ingresos vs Gastos
+                            Gasto Corriente (50%)
                         </h3>
                     </div>
                     <div className="space-y-6">
                         {/* 50% Allowance vs Real Expenses */}
                         <div className="space-y-2">
                             <div className="flex justify-between text-sm">
-                                <span className="text-muted-foreground">Tu Límite de Gastos (50% de Ingresos)</span>
-                                <span className="font-semibold text-purple-400">{formatCurrency(stats.plan.fixedExpenses, currency)}</span>
+                                <span className="text-muted-foreground">Presupuesto (50%)</span>
+                                <span className="font-semibold text-purple-400">{formatCurrency(stats.plan.currentExpenses, currency)}</span>
                             </div>
                             <div className="flex justify-between text-sm">
-                                <span className="text-muted-foreground">Gastos Reales (Fijos + Variables)</span>
-                                <span className={clsx("font-semibold", stats.totalExpenses > stats.plan.fixedExpenses ? "text-red-400" : "text-green-400")}>
+                                <span className="text-muted-foreground">Gastos Totales</span>
+                                <span className={clsx("font-semibold", stats.totalExpenses > stats.plan.currentExpenses * 2 ? "text-red-400" : "text-white")}>
                                     {formatCurrency(stats.totalExpenses, currency)}
                                 </span>
                             </div>
 
                             {/* Status Bar */}
                             <div className="h-4 bg-white/5 rounded-full overflow-hidden relative">
-                                {/* The Target Bar (50%) */}
                                 <div
                                     className="absolute top-0 bottom-0 left-0 bg-white/10 border-r-2 border-dashed border-white/30 z-10"
-                                    style={{ width: '50%' }}
-                                    title="Meta del 50%"
+                                    style={{ width: '100%' }}
+                                    title="Meta del 100%"
                                 />
-
-                                {/* The Actual Usage Bar */}
                                 <motion.div
                                     className={clsx(
                                         "h-full rounded-full",
-                                        stats.totalExpenses > stats.plan.fixedExpenses ? "bg-red-500" : "bg-green-500"
+                                        stats.totalExpenses > stats.totalIncome ? "bg-red-500" : "bg-green-500"
                                     )}
                                     initial={{ width: 0 }}
                                     animate={{ width: `${Math.min((stats.totalExpenses / stats.totalIncome) * 100, 100)}%` }}
                                     transition={{ duration: 1, ease: 'easeOut' }}
                                 />
                             </div>
-
-                            <div className="pt-2">
-                                {stats.totalExpenses > stats.plan.fixedExpenses ? (
-                                    <div className="flex items-center gap-2 text-red-300 text-sm bg-red-500/10 p-3 rounded-lg border border-red-500/20">
-                                        <AlertTriangle size={16} />
-                                        <span>
-                                            ¡Cuidado! Estás gastando más del 50% de tus ingresos.
-                                            Te faltan <strong>{formatCurrency(stats.totalExpenses - stats.plan.fixedExpenses, currency)}</strong> para ajustar tu presupuesto.
-                                        </span>
-                                    </div>
-                                ) : (
-                                    <div className="flex items-center gap-2 text-green-300 text-sm bg-green-500/10 p-3 rounded-lg border border-green-500/20">
-                                        <CheckCircle2 size={16} />
-                                        <span>
-                                            ¡Excelente! Tus gastos están dentro del 50% por <strong>{formatCurrency(stats.plan.fixedExpenses - stats.totalExpenses, currency)}</strong>.
-                                        </span>
-                                    </div>
-                                )}
-                            </div>
+                            <p className="text-xs text-muted-foreground text-center">
+                                {((stats.totalExpenses / stats.totalIncome) * 100 || 0).toFixed(1)}% de los Ingresos Totales utilizados
+                            </p>
                         </div>
                     </div>
                 </Card>
@@ -168,15 +166,7 @@ export function Distribution() {
                 {/* Distribution Grid */}
                 <div className="grid grid-cols-2 gap-4">
                     <DistributionCard
-                        title="Inversiones (20%)"
-                        amount={stats.plan.dividends}
-                        currency={currency}
-                        icon={Landmark}
-                        color="text-blue-400"
-                        bgColor="bg-blue-400/10"
-                    />
-                    <DistributionCard
-                        title="Ahorro (10%)"
+                        title="Ahorro (15%)"
                         amount={stats.plan.savings}
                         currency={currency}
                         icon={Wallet}
@@ -184,27 +174,35 @@ export function Distribution() {
                         bgColor="bg-emerald-400/10"
                     />
                     <DistributionCard
-                        title="Caja Fuerte (10%)"
-                        amount={stats.plan.safeBox}
+                        title="OCIO (15%)"
+                        amount={stats.plan.leisure}
                         currency={currency}
-                        icon={Shield}
-                        color="text-amber-400"
-                        bgColor="bg-amber-400/10"
+                        icon={Gamepad2}
+                        color="text-purple-400"
+                        bgColor="bg-purple-400/10"
                     />
                     <DistributionCard
-                        title="Diezmo (10%)"
-                        amount={stats.plan.tithe}
+                        title="Pago Leo (10%)"
+                        amount={stats.plan.leo}
                         currency={currency}
-                        icon={Heart}
-                        color="text-rose-400"
-                        bgColor="bg-rose-400/10"
+                        icon={UserCircle}
+                        color="text-blue-400"
+                        bgColor="bg-blue-400/10"
+                    />
+                    <DistributionCard
+                        title="Pago Fer (10%)"
+                        amount={stats.plan.fer}
+                        currency={currency}
+                        icon={UserCircle}
+                        color="text-pink-400"
+                        bgColor="bg-pink-400/10"
                     />
                 </div>
             </div>
 
             {/* Comparison Table */}
             <div className="space-y-4">
-                <h3 className="text-xl font-bold">Análisis de Gastos</h3>
+                <h3 className="text-xl font-bold">Registro de Movimientos</h3>
                 <div className="grid grid-cols-1 overflow-hidden rounded-xl border border-white/10 bg-white/5">
                     <div className="p-4 grid grid-cols-[1fr,auto] md:grid-cols-[auto,1fr,1fr,auto] gap-4 text-sm font-medium text-muted-foreground border-b border-white/10 bg-black/20">
                         <div className="hidden md:block">Fecha</div>
@@ -244,6 +242,62 @@ export function Distribution() {
                     </div>
                 </div>
             </div>
+
+            <SmartIncomeModal
+                isOpen={isIncomeModalOpen}
+                onClose={() => setIsIncomeModalOpen(false)}
+                onAdd={(amount, concept) => {
+                    const date = new Date().toISOString();
+                    // 1. Create the Income Transaction
+                    const incomeTx = {
+                        date,
+                        description: concept,
+                        amount: amount,
+                        type: 'income' as const,
+                        category: 'variable' as const,
+                    };
+
+                    // 2. Create the Split Expenses
+                    const savingsAmount = amount * 0.15;
+                    const leisureAmount = amount * 0.15;
+                    const leoAmount = amount * 0.10;
+                    const ferAmount = amount * 0.10;
+
+                    const expenseTxs = [
+                        {
+                            date,
+                            description: `Ahorro (15%): ${concept}`,
+                            amount: savingsAmount,
+                            type: 'expense' as const,
+                            category: 'fixed' as const,
+                        },
+                        {
+                            date,
+                            description: `OCIO (15%): ${concept}`,
+                            amount: leisureAmount,
+                            type: 'expense' as const,
+                            category: 'variable' as const,
+                        },
+                        {
+                            date,
+                            description: `Pago Leo (10%): ${concept}`,
+                            amount: leoAmount,
+                            type: 'expense' as const,
+                            category: 'fixed' as const,
+                        },
+                        {
+                            date,
+                            description: `Pago Fer (10%): ${concept}`,
+                            amount: ferAmount,
+                            type: 'expense' as const,
+                            category: 'fixed' as const,
+                        }
+                    ];
+
+                    addTransactions([incomeTx, ...expenseTxs]);
+                    setIsIncomeModalOpen(false);
+                }}
+            />
         </div>
     );
 }
@@ -261,3 +315,87 @@ function DistributionCard({ title, amount, currency, icon: Icon, color, bgColor 
         </Card>
     );
 }
+
+function SmartIncomeModal({ isOpen, onClose, onAdd }: { isOpen: boolean; onClose: () => void; onAdd: (amount: number, concept: string) => void }) {
+    const [amount, setAmount] = useState('');
+    const [concept, setConcept] = useState('');
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        onAdd(Number(amount), concept);
+        setAmount('');
+        setConcept('');
+    };
+
+    return (
+        <AnimatePresence>
+            {isOpen && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.95 }}
+                        className="bg-[#1a1a1a] border border-white/10 rounded-2xl p-6 w-full max-w-md shadow-xl"
+                    >
+                        <div className="flex justify-between items-center mb-6">
+                            <h3 className="text-xl font-bold text-white">Registrar Ingreso Inteligente</h3>
+                            <button onClick={onClose} className="p-1 hover:bg-white/10 rounded-lg transition-colors">
+                                <X size={20} className="text-muted-foreground" />
+                            </button>
+                        </div>
+
+                        <form onSubmit={handleSubmit} className="space-y-6">
+                            <div className="space-y-2">
+                                <label className="text-sm text-muted-foreground">Monto del Ingreso</label>
+                                <div className="relative">
+                                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">$</span>
+                                    <input
+                                        type="number"
+                                        required
+                                        value={amount}
+                                        onChange={(e) => setAmount(e.target.value)}
+                                        className="w-full bg-black/20 border border-white/10 rounded-xl pl-8 pr-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 text-white"
+                                        placeholder="0.00"
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="space-y-2">
+                                <label className="text-sm text-muted-foreground">Concepto</label>
+                                <input
+                                    type="text"
+                                    required
+                                    value={concept}
+                                    onChange={(e) => setConcept(e.target.value)}
+                                    className="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 text-white"
+                                    placeholder="Ej: Nómina, Venta..."
+                                />
+                            </div>
+
+                            <div className="bg-emerald-500/5 border border-emerald-500/10 rounded-xl p-4 space-y-2">
+                                <p className="text-xs font-semibold text-emerald-400 mb-2">Distribución Automática:</p>
+                                <div className="grid grid-cols-2 gap-2 text-xs text-muted-foreground">
+                                    <div>Ahorro (15%): <span className="text-emerald-400 font-mono">${(Number(amount) * 0.15).toFixed(2)}</span></div>
+                                    <div>Ocio (15%): <span className="text-purple-400 font-mono">${(Number(amount) * 0.15).toFixed(2)}</span></div>
+                                    <div>Leo (10%): <span className="text-blue-400 font-mono">${(Number(amount) * 0.10).toFixed(2)}</span></div>
+                                    <div>Fer (10%): <span className="text-pink-400 font-mono">${(Number(amount) * 0.10).toFixed(2)}</span></div>
+                                    <div className="col-span-2 border-t border-white/5 pt-2 mt-1">
+                                        Gasto Corriente (50%): <span className="text-white font-mono">${(Number(amount) * 0.50).toFixed(2)}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button
+                                type="submit"
+                                className="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-semibold py-3 rounded-xl transition-all shadow-lg shadow-emerald-500/20"
+                            >
+                                Confirmar y Distribuir
+                            </button>
+                        </form>
+                    </motion.div>
+                </div>
+            )}
+        </AnimatePresence>
+    );
+}
+

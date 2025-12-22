@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Layout } from './components/Layout';
 import { Dashboard } from './pages/Dashboard';
-import { MonthlyPlanner } from './pages/MonthlyPlanner';
+import { Income } from './pages/Income';
 import { Portfolio } from './pages/Portfolio';
 import { CashFlow } from './pages/CashFlow';
 import { Goals } from './pages/Goals';
@@ -46,7 +46,7 @@ function App() {
   return (
     <Layout activeTab={activeTab} onTabChange={setActiveTab}>
       {activeTab === 'dashboard' && <Dashboard />}
-      {activeTab === 'planner' && <MonthlyPlanner />}
+      {activeTab === 'income' && <Income />}
       {activeTab === 'calendar' && <CalendarView />}
       {activeTab === 'portfolio' && <Portfolio />}
       {activeTab === 'cashflow' && <CashFlow />}
