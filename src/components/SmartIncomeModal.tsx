@@ -30,20 +30,13 @@ export function SmartIncomeModal({ isOpen, onClose }: SmartIncomeModalProps) {
         };
 
         // 2. Create the Split Expenses
-        // 50/15/15/10/10 Logic
-        const leisureAmount = numAmount * 0.15;
+        // New Model: Leo (10%), Fer (10%), Mudanza (20%), Ahorro (15%), Gasto Corriente (45%)
         const leoAmount = numAmount * 0.10;
         const ferAmount = numAmount * 0.10;
+        const mudanzaAmount = numAmount * 0.20;
+        // Ahorro (15%) and Gasto Corriente (45%) remain in account
 
         const expenseTxs = [
-            // Savings are not tracked as expenses anymore
-            {
-                date,
-                description: `OCIO (15%): ${concept}`,
-                amount: leisureAmount,
-                type: 'expense' as const,
-                category: 'variable' as const,
-            },
             {
                 date,
                 description: `Pago Leo (10%): ${concept}`,
@@ -55,6 +48,13 @@ export function SmartIncomeModal({ isOpen, onClose }: SmartIncomeModalProps) {
                 date,
                 description: `Pago Fer (10%): ${concept}`,
                 amount: ferAmount,
+                type: 'expense' as const,
+                category: 'fixed' as const,
+            },
+            {
+                date,
+                description: `Mudanza (20%): ${concept}`,
+                amount: mudanzaAmount,
                 type: 'expense' as const,
                 category: 'fixed' as const,
             }
@@ -115,12 +115,12 @@ export function SmartIncomeModal({ isOpen, onClose }: SmartIncomeModalProps) {
                             <div className="bg-emerald-500/5 border border-emerald-500/10 rounded-xl p-4 space-y-2">
                                 <p className="text-xs font-semibold text-emerald-400 mb-2">Distribución Automática:</p>
                                 <div className="grid grid-cols-2 gap-2 text-xs text-muted-foreground">
-                                    <div>Ahorro (15%): <span className="text-emerald-400 font-mono">${(Number(amount) * 0.15).toFixed(2)}</span></div>
-                                    <div>Ocio (15%): <span className="text-purple-400 font-mono">${(Number(amount) * 0.15).toFixed(2)}</span></div>
                                     <div>Leo (10%): <span className="text-blue-400 font-mono">${(Number(amount) * 0.10).toFixed(2)}</span></div>
                                     <div>Fer (10%): <span className="text-pink-400 font-mono">${(Number(amount) * 0.10).toFixed(2)}</span></div>
+                                    <div>Mudanza (20%): <span className="text-orange-400 font-mono">${(Number(amount) * 0.20).toFixed(2)}</span></div>
+                                    <div>Ahorro (15%): <span className="text-emerald-400 font-mono">${(Number(amount) * 0.15).toFixed(2)}</span></div>
                                     <div className="col-span-2 border-t border-white/5 pt-2 mt-1">
-                                        Gasto Corriente (50%): <span className="text-white font-mono">${(Number(amount) * 0.50).toFixed(2)}</span>
+                                        Gasto Corriente (45%): <span className="text-white font-mono">${(Number(amount) * 0.45).toFixed(2)}</span>
                                     </div>
                                 </div>
                             </div>

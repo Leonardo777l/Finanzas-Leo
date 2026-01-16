@@ -1,86 +1,118 @@
-import { DollarSign, TrendingDown, TrendingUp, PiggyBank } from 'lucide-react';
+import { useState, useMemo } from 'react';
 import { useFinanceStore } from '../store/financeStore';
-import { SummaryCard } from '../components/SummaryCard';
-import { ExpenseChart } from '../components/ExpenseChart';
-import { NetWorthChart } from '../components/NetWorthChart';
 import { GlassCard } from '../components/ui/GlassCard';
-import { SmartInsights } from '../components/SmartInsights';
+import { format, startOfMonth, endOfMonth, isWithinInterval, parseISO, subMonths, addMonths } from 'date-fns';
+import { es } from 'date-fns/locale';
+import { ChevronLeft, ChevronRight, UserCircle, Truck, Wallet, Banknote } from 'lucide-react';
+import { formatCurrency } from '../lib/utils';
+import { SummaryCard } from '../components/SummaryCard';
 
 export function Dashboard() {
-    const { transactions, assets } = useFinanceStore();
+    const { transactions, currency } = useFinanceStore();
+    const [currentDate, setCurrentDate] = useState(new Date());
 
-    // Calculate totals
-    const totalIncome = transactions
-        .filter(t => t.type === 'income')
-        .reduce((sum, t) => sum + t.amount, 0);
+    const navigateMonth = (direction: 'prev' | 'next') => {
+        setCurrentDate((prev) => (direction === 'prev' ? subMonths(prev, 1) : addMonths(prev, 1)));
+    };
 
-    const totalExpenses = transactions
-        .filter(t => t.type === 'expense')
-        .reduce((sum, t) => sum + t.amount, 0);
+    const stats = useMemo(() => {
+        const start = startOfMonth(currentDate);
+        const end = endOfMonth(currentDate);
 
-    const totalInvestments = assets.reduce((sum, a) => sum + (a.quantity * a.currentPrice), 0);
+        // Filter transactions for the selected month
+        const monthlyTransactions = transactions.filter((t) => {
+            const date = parseISO(t.date);
+            return isWithinInterval(date, { start, end });
+        });
 
-    const totalBalance = totalIncome - totalExpenses + totalInvestments;
+        const totalIncome = monthlyTransactions
+            .filter((t) => t.type === 'income')
+            .reduce((sum, t) => sum + t.amount, 0);
+
+        // Calculate Distributions based on percentages of Total Income
+        return {
+            leo: totalIncome * 0.10,
+            fer: totalIncome * 0.10,
+            mudanza: totalIncome * 0.20,
+            ahorro: totalIncome * 0.15,
+            gastoCorriente: totalIncome * 0.45,
+            totalIncome
+        };
+    }, [transactions, currentDate]);
 
     return (
         <div className="space-y-8">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <h2 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-white to-white/60 bg-clip-text text-transparent">
-                    Resumen Financiero
+                    Distribución Mensual
                 </h2>
-                <div className="text-sm text-muted-foreground">
-                    Última actualización: Hoy
+
+                {/* Month Selector */}
+                <div className="flex items-center bg-white/5 rounded-xl border border-white/10 p-1">
+                    <button
+                        onClick={() => navigateMonth('prev')}
+                        className="p-2 hover:bg-white/10 rounded-lg transition-colors text-muted-foreground hover:text-white"
+                    >
+                        <ChevronLeft size={20} />
+                    </button>
+                    <span className="w-40 text-center font-medium capitalize">
+                        {format(currentDate, 'MMMM yyyy', { locale: es })}
+                    </span>
+                    <button
+                        onClick={() => navigateMonth('next')}
+                        className="p-2 hover:bg-white/10 rounded-lg transition-colors text-muted-foreground hover:text-white"
+                    >
+                        <ChevronRight size={20} />
+                    </button>
                 </div>
             </div>
 
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            {/* Distribution Cards */}
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
                 <SummaryCard
-                    title="Patrimonio Neto"
-                    amount={totalBalance}
-                    icon={DollarSign}
+                    title="Leo (10%)"
+                    amount={stats.leo}
+                    icon={UserCircle}
                     className="border-l-4 border-l-blue-500"
                     delay={0.1}
                 />
                 <SummaryCard
-                    title="Ingresos Totales"
-                    amount={totalIncome}
-                    icon={TrendingUp}
-                    className="border-l-4 border-l-emerald-500"
+                    title="Fer (10%)"
+                    amount={stats.fer}
+                    icon={UserCircle}
+                    className="border-l-4 border-l-pink-500"
                     delay={0.2}
                 />
                 <SummaryCard
-                    title="Gastos Totales"
-                    amount={totalExpenses}
-                    icon={TrendingDown}
-                    className="border-l-4 border-l-rose-500"
+                    title="Mudanza (20%)"
+                    amount={stats.mudanza}
+                    icon={Truck}
+                    className="border-l-4 border-l-orange-500"
                     delay={0.3}
                 />
                 <SummaryCard
-                    title="Inversiones"
-                    amount={totalInvestments}
-                    icon={PiggyBank}
-                    className="border-l-4 border-l-violet-500"
+                    title="Ahorro (15%)"
+                    amount={stats.ahorro}
+                    icon={Wallet}
+                    className="border-l-4 border-l-emerald-500"
                     delay={0.4}
+                />
+                <SummaryCard
+                    title="Gasto Cte. (45%)"
+                    amount={stats.gastoCorriente}
+                    icon={Banknote}
+                    className="border-l-4 border-l-white"
+                    delay={0.5}
                 />
             </div>
 
-            <SmartInsights />
+            <GlassCard className="p-6">
+                <h3 className="text-lg font-semibold mb-2 text-muted-foreground">Total Generado en {format(currentDate, 'MMMM', { locale: es })}</h3>
+                <p className="text-4xl font-bold text-white tracking-tight">
+                    {formatCurrency(stats.totalIncome, currency)}
+                </p>
+            </GlassCard>
 
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-7">
-                <GlassCard className="col-span-4 min-h-[400px]" delay={0.5}>
-                    <h3 className="text-lg font-semibold mb-6">Tendencia de Patrimonio</h3>
-                    <div className="h-[350px]">
-                        <NetWorthChart transactions={transactions} />
-                    </div>
-                </GlassCard>
-
-                <GlassCard className="col-span-3 min-h-[400px]" delay={0.6}>
-                    <h3 className="text-lg font-semibold mb-6">Desglose de Gastos</h3>
-                    <div className="h-[350px]">
-                        <ExpenseChart transactions={transactions} />
-                    </div>
-                </GlassCard>
-            </div>
         </div>
     );
 }

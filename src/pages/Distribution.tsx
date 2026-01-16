@@ -3,7 +3,7 @@ import { useFinanceStore } from '../store/financeStore';
 import { format, startOfMonth, endOfMonth, isWithinInterval, parseISO, subMonths, addMonths } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { motion } from 'framer-motion';
-import { PieChart, ChevronLeft, ChevronRight, Wallet, Banknote, Plus, Gamepad2, UserCircle, TrendingUp } from 'lucide-react';
+import { PieChart, ChevronLeft, ChevronRight, Wallet, Banknote, Plus, Truck, UserCircle, TrendingUp } from 'lucide-react';
 import { GlassCard as Card } from '../components/ui/GlassCard';
 import { formatCurrency } from '../lib/utils';
 import { clsx } from 'clsx';
@@ -38,15 +38,15 @@ export function Distribution() {
             .reduce((sum, t) => sum + t.amount, 0);
 
         // New Distribution Model:
-        // 50% - Gasto Corriente (Base)
+        // 45% - Gasto Corriente (Base)
         // 15% - Ahorro
-        // 15% - OCIO
+        // 20% - Mudanza
         // 10% - LEO
         // 10% - FER
         const plan = {
-            currentExpenses: totalIncome * 0.50, // 50%
+            currentExpenses: totalIncome * 0.45, // 45%
             savings: totalIncome * 0.15,         // 15%
-            leisure: totalIncome * 0.15,         // 15% - OCIO
+            mudanza: totalIncome * 0.20,         // 20%
             leo: totalIncome * 0.10,             // 10%
             fer: totalIncome * 0.10,             // 10%
         };
@@ -74,7 +74,7 @@ export function Distribution() {
                         Distribución de Ingresos
                     </h2>
                     <p className="text-muted-foreground mt-1">
-                        Modelo 50/15/15/10/10 - Gasto / Ahorro / Ocio / Leo / Fer
+                        Modelo 45/20/15/10/10 - Gasto / Mudanza / Ahorro / Leo / Fer
                     </p>
                 </div>
 
@@ -144,14 +144,14 @@ export function Distribution() {
                     <div className="flex items-center justify-between mb-6">
                         <h3 className="font-semibold text-lg flex items-center gap-2">
                             <PieChart className="text-purple-400" size={20} />
-                            Gasto Corriente (50%)
+                            Gasto Corriente (45%)
                         </h3>
                     </div>
                     <div className="space-y-6">
                         {/* 50% Allowance vs Real Expenses */}
                         <div className="space-y-2">
                             <div className="flex justify-between text-sm">
-                                <span className="text-muted-foreground">Presupuesto (50%)</span>
+                                <span className="text-muted-foreground">Presupuesto (45%)</span>
                                 <span className="font-semibold text-purple-400">{formatCurrency(stats.plan.currentExpenses, currency)}</span>
                             </div>
                             <div className="flex justify-between text-sm">
@@ -196,12 +196,12 @@ export function Distribution() {
                         bgColor="bg-emerald-400/10"
                     />
                     <DistributionCard
-                        title="OCIO (15%)"
-                        amount={stats.plan.leisure}
+                        title="Mudanza (20%)"
+                        amount={stats.plan.mudanza}
                         currency={currency}
-                        icon={Gamepad2}
-                        color="text-purple-400"
-                        bgColor="bg-purple-400/10"
+                        icon={Truck} // Reuse Truck if imported or use Gamepad2 as placeholder and fix imports next
+                        color="text-orange-400"
+                        bgColor="bg-orange-400/10"
                     />
                     <DistributionCard
                         title="Pago Leo (10%)"
