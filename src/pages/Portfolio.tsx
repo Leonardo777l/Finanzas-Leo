@@ -14,10 +14,14 @@ export function Portfolio() {
     // Helper to group assets by symbol
     const groupAssets = (assetsToGroup: typeof assets) => {
         const grouped = assetsToGroup.reduce((acc, asset) => {
-            if (!acc[asset.symbol]) {
-                acc[asset.symbol] = {
+            // Normalize symbol: remove whitespace and uppercase
+            const normalizedSymbol = asset.symbol.trim().toUpperCase();
+
+            if (!acc[normalizedSymbol]) {
+                acc[normalizedSymbol] = {
                     ...asset,
-                    id: `agg-${asset.symbol}`, // Synthetic ID
+                    symbol: normalizedSymbol, // Ensure aggregated asset has normalized symbol
+                    id: `agg-${normalizedSymbol}`, // Synthetic ID
                     quantity: 0,
                     avgBuyPrice: 0,
                     // We'll store total cost basis to calculate avg price later
@@ -26,14 +30,14 @@ export function Portfolio() {
                 };
             }
 
-            acc[asset.symbol].quantity += asset.quantity;
+            acc[normalizedSymbol].quantity += asset.quantity;
             // Accumulate weighted cost
-            acc[asset.symbol]._totalCost += (asset.quantity * asset.avgBuyPrice);
+            acc[normalizedSymbol]._totalCost += (asset.quantity * asset.avgBuyPrice);
             // Keep latest current price (assuming all entries of same asset should have same market price)
-            acc[asset.symbol].currentPrice = asset.currentPrice;
+            acc[normalizedSymbol].currentPrice = asset.currentPrice;
 
             // Add original asset to subAssets
-            acc[asset.symbol].subAssets.push(asset);
+            acc[normalizedSymbol].subAssets.push(asset);
 
             return acc;
         }, {} as Record<string, typeof assets[0] & { _totalCost: number, subAssets: typeof assets }>);
