@@ -28,12 +28,6 @@ const COINGECKO_MAP: Record<string, string> = {
     'RNDR': 'render-token',
 };
 
-interface PriceData {
-    [key: string]: {
-        mxn: number;
-    };
-}
-
 interface PriceResponse {
     [key: string]: {
         mxn: number;
