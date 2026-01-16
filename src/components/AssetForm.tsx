@@ -17,7 +17,7 @@ export function AssetForm({ type }: AssetFormProps) {
         if (!symbol || !quantity || !price) return;
 
         addAsset({
-            symbol: symbol.toUpperCase(),
+            symbol: symbol.replace(/[^a-zA-Z0-9]/g, '').toUpperCase(), // Sanitize input
             name: symbol.toUpperCase(), // Simplification
             type,
             quantity: Number(quantity),
