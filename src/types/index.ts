@@ -19,6 +19,7 @@ export interface Asset {
     quantity: number;
     avgBuyPrice: number;
     currentPrice: number; // Manually updated or mocked
+    currentPriceUSD?: number; // Optional: Price in USD
 }
 
 export interface Budget {

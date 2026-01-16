@@ -35,6 +35,7 @@ export function Portfolio() {
             acc[normalizedSymbol]._totalCost += (asset.quantity * asset.avgBuyPrice);
             // Keep latest current price (assuming all entries of same asset should have same market price)
             acc[normalizedSymbol].currentPrice = asset.currentPrice;
+            acc[normalizedSymbol].currentPriceUSD = asset.currentPriceUSD;
 
             // Add original asset to subAssets
             acc[normalizedSymbol].subAssets.push(asset);
@@ -59,14 +60,22 @@ export function Portfolio() {
     const totalStocksValue = stockAssets.reduce((sum, a) => sum + (a.quantity * a.currentPrice), 0);
 
     // Total Market Value
-    const totalPortfolioValue = totalCryptoValue + totalStocksValue;
+    const totalPortfolioValueMXN = totalCryptoValue + totalStocksValue;
 
-    // Total Cost Basis (Invested)
+    // Calculate Total Value in USD
+    const totalCryptoValueUSD = cryptoAssets.reduce((sum, a) => sum + (a.quantity * (a.currentPriceUSD || 0)), 0);
+    const totalStocksValueUSD = stockAssets.reduce((sum, a) => sum + (a.quantity * (a.currentPriceUSD || 0)), 0);
+    const totalPortfolioValueUSD = totalCryptoValueUSD + totalStocksValueUSD;
+
+    // Total Cost Basis (Invested) - Assuming this is in USD as per user request
+    // "la inversión total siempre la hago en dolares" -> So totalInvested is basically USD cost basis if avgBuyPrice was entered in USD.
+    // However, previously avgBuyPrice might have been entered in MXN.
+    // Use stored avgBuyPrice. If user enters USD, it's USD.
     const totalInvested = assets.reduce((sum, a) => sum + (a.quantity * a.avgBuyPrice), 0);
 
-    // Total Return
-    const totalReturn = totalPortfolioValue - totalInvested;
-    const totalReturnPercent = totalInvested > 0 ? (totalReturn / totalInvested) * 100 : 0;
+    // Total Return (USD based if invested is USD)
+    const totalReturnUSD = totalPortfolioValueUSD - totalInvested;
+    const totalReturnPercent = totalInvested > 0 ? (totalReturnUSD / totalInvested) * 100 : 0;
 
     const handleRemoveAsset = (symbol: string) => {
         // Remove all assets defined by this symbol
@@ -104,20 +113,20 @@ export function Portfolio() {
 
                 <div className="flex gap-6 text-right">
                     <div>
-                        <p className="text-sm text-muted-foreground">Inversión Total</p>
+                        <p className="text-sm text-muted-foreground">Inversión Total (USD)</p>
                         <p className="text-lg font-semibold text-muted-foreground/80">
-                            {new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN' }).format(totalInvested)}
+                            {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(totalInvested)}
                         </p>
                     </div>
                     <div>
-                        <p className="text-sm text-muted-foreground">Valor Actual</p>
+                        <p className="text-sm text-muted-foreground">Valor Actual (USD)</p>
                         <div className="flex flex-col items-end">
                             <p className="text-2xl font-bold text-primary">
-                                {new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN' }).format(totalPortfolioValue)}
+                                {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(totalPortfolioValueUSD)}
                             </p>
-                            <div className={clsx("flex items-center gap-1 text-xs font-bold", totalReturn >= 0 ? "text-emerald-400" : "text-rose-400")}>
-                                {totalReturn >= 0 ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
-                                <span>{new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN' }).format(totalReturn)}</span>
+                            <div className={clsx("flex items-center gap-1 text-xs font-bold", totalReturnUSD >= 0 ? "text-emerald-400" : "text-rose-400")}>
+                                {totalReturnUSD >= 0 ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
+                                <span>{new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(totalReturnUSD)}</span>
                                 <span>({totalReturnPercent.toFixed(2)}%)</span>
                             </div>
                         </div>
@@ -134,7 +143,7 @@ export function Portfolio() {
                         <div className="flex items-center justify-between px-2">
                             <h3 className="text-xl font-semibold text-orange-400">Criptoactivos</h3>
                             <span className="font-bold text-lg">
-                                {new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN' }).format(totalCryptoValue)}
+                                {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(totalCryptoValueUSD)}
                             </span>
                         </div>
                         <GlassCard delay={0.1}>
@@ -155,7 +164,7 @@ export function Portfolio() {
                         <div className="flex items-center justify-between px-2">
                             <h3 className="text-xl font-semibold text-blue-400">Acciones y Empresas</h3>
                             <span className="font-bold text-lg">
-                                {new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN' }).format(totalStocksValue)}
+                                {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(totalStocksValueUSD)}
                             </span>
                         </div>
                         <GlassCard delay={0.2}>

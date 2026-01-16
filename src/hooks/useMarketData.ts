@@ -31,9 +31,15 @@ export function useMarketData() {
             // Note: This iterates over all assets. If we have many assets, batch update would be better in store.
             // But checking if price changed is good enough for now.
             assets.forEach(asset => {
-                const newPrice = allPrices[asset.symbol];
-                if (newPrice !== undefined && newPrice !== asset.currentPrice) {
-                    updateAsset(asset.id, { currentPrice: newPrice });
+                const prices = allPrices[asset.symbol];
+                if (prices) {
+                    const updates: Partial<typeof asset> = {};
+                    if (prices.mxn !== asset.currentPrice) updates.currentPrice = prices.mxn;
+                    if (prices.usd !== asset.currentPriceUSD) updates.currentPriceUSD = prices.usd;
+
+                    if (Object.keys(updates).length > 0) {
+                        updateAsset(asset.id, updates);
+                    }
                 }
             });
 
