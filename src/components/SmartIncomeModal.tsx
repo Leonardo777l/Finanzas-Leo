@@ -31,7 +31,6 @@ export function SmartIncomeModal({ isOpen, onClose }: SmartIncomeModalProps) {
 
         // 2. Create the Split Expenses
         // 50/15/15/10/10 Logic
-        const savingsAmount = numAmount * 0.15;
         const leisureAmount = numAmount * 0.15;
         const leoAmount = numAmount * 0.10;
         const ferAmount = numAmount * 0.10;
