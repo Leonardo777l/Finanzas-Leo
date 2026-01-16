@@ -3,7 +3,7 @@ import { useFinanceStore } from '../store/financeStore';
 import { format, startOfMonth, endOfMonth, isWithinInterval, parseISO, subMonths, addMonths } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { motion } from 'framer-motion';
-import { PieChart, ChevronLeft, ChevronRight, Wallet, Banknote, Plus, Gamepad2, UserCircle } from 'lucide-react';
+import { PieChart, ChevronLeft, ChevronRight, Wallet, Banknote, Plus, Gamepad2, UserCircle, TrendingUp } from 'lucide-react';
 import { GlassCard as Card } from '../components/ui/GlassCard';
 import { formatCurrency } from '../lib/utils';
 import { clsx } from 'clsx';
@@ -11,9 +11,14 @@ import { clsx } from 'clsx';
 import { SmartIncomeModal } from '../components/SmartIncomeModal';
 
 export function Distribution() {
-    const { transactions, currency } = useFinanceStore();
+    const { transactions, currency, assets } = useFinanceStore();
     const [currentDate, setCurrentDate] = useState(new Date());
     const [isIncomeModalOpen, setIsIncomeModalOpen] = useState(false);
+
+    // Calculate total portfolio value (Quantity * Current Price)
+    const totalPortfolioValue = useMemo(() => {
+        return assets.reduce((sum, asset) => sum + (asset.quantity * asset.currentPrice), 0);
+    }, [assets]);
 
     const stats = useMemo(() => {
         const start = startOfMonth(currentDate);
@@ -103,19 +108,35 @@ export function Distribution() {
             </div>
 
             {/* Total Income Display */}
-            <Card className="p-6 bg-gradient-to-br from-green-500/10 to-emerald-500/5 border-green-500/20">
-                <div className="flex items-center gap-4">
-                    <div className="p-3 bg-green-500/10 rounded-xl text-green-400">
-                        <Banknote size={32} />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <Card className="p-6 bg-gradient-to-br from-green-500/10 to-emerald-500/5 border-green-500/20">
+                    <div className="flex items-center gap-4">
+                        <div className="p-3 bg-green-500/10 rounded-xl text-green-400">
+                            <Banknote size={32} />
+                        </div>
+                        <div>
+                            <p className="text-sm text-muted-foreground font-medium">Ingresos Totales</p>
+                            <p className="text-3xl font-bold text-green-400">
+                                {formatCurrency(stats.totalIncome, currency)}
+                            </p>
+                        </div>
                     </div>
-                    <div>
-                        <p className="text-sm text-muted-foreground font-medium">Ingresos Totales</p>
-                        <p className="text-3xl font-bold text-green-400">
-                            {formatCurrency(stats.totalIncome, currency)}
-                        </p>
+                </Card>
+
+                <Card className="p-6 bg-gradient-to-br from-blue-500/10 to-cyan-500/5 border-blue-500/20">
+                    <div className="flex items-center gap-4">
+                        <div className="p-3 bg-blue-500/10 rounded-xl text-blue-400">
+                            <TrendingUp size={32} />
+                        </div>
+                        <div>
+                            <p className="text-sm text-muted-foreground font-medium">Valor Inversiones (Actual)</p>
+                            <p className="text-3xl font-bold text-blue-400">
+                                {formatCurrency(totalPortfolioValue, currency)}
+                            </p>
+                        </div>
                     </div>
-                </div>
-            </Card>
+                </Card>
+            </div>
 
             {/* Reality Check Section */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

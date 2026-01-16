@@ -37,13 +37,7 @@ export function SmartIncomeModal({ isOpen, onClose }: SmartIncomeModalProps) {
         const ferAmount = numAmount * 0.10;
 
         const expenseTxs = [
-            {
-                date,
-                description: `Ahorro (15%): ${concept}`,
-                amount: savingsAmount,
-                type: 'expense' as const,
-                category: 'fixed' as const,
-            },
+            // Savings are not tracked as expenses anymore
             {
                 date,
                 description: `OCIO (15%): ${concept}`,
