@@ -79,6 +79,6 @@ export const fetchCryptoPrices = async (symbols: string[]): Promise<Record<strin
 
 // Placeholder for stocks - specialized APIs usually require keys
 // For now, we'll return empty so the UI relies on manual entry or existing values
-export const fetchStockPrices = async (symbols: string[]): Promise<Record<string, number>> => {
+export const fetchStockPrices = async (_symbols: string[]): Promise<Record<string, number>> => {
     return {};
 };
