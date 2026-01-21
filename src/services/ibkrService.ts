@@ -127,4 +127,4 @@ export async function fetchIbkrPortfolio(config: IbkrConfig): Promise<Omit<Asset
         ];
     }
 }
-```
+
