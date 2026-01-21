@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useFinanceStore } from '../store/financeStore';
 import { fetchBitsoBalances } from '../services/bitsoService';
 import type { Asset } from '../types';
+import { useMarketData } from '../hooks/useMarketData';
 import { Loader2, Check, AlertCircle, Wallet } from 'lucide-react';
 import { GlassCard } from './ui/GlassCard';
 
@@ -92,6 +93,8 @@ export function BitsoIntegration() {
             });
 
             setSuccess(`Sync successful: ${addedCount} added, ${updatedCount} updated.`);
+            // Refresh market prices to update values
+            refreshPrices();
         } catch (err: unknown) {
             console.error(err);
             if (err instanceof Error) {
