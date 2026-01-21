@@ -20,6 +20,15 @@ export const useFinanceStore = create<AppState>()(
 
             setSyncStatus: (status, error = null) => set({ syncStatus: status, syncError: error }),
 
+            bitsoApiKeys: {
+                key: 'UgEGKpZKGU',
+                secret: 'c0582b6057d80aee02d47d7a04b352ad'
+            },
+            isBitsoSyncing: false,
+
+            setBitsoKeys: (keys) => set({ bitsoApiKeys: keys }),
+            setBitsoSyncing: (isSyncing) => set({ isBitsoSyncing: isSyncing }),
+
             addTransaction: (transaction) =>
                 set((state) => ({
                     transactions: [...state.transactions, { ...transaction, id: crypto.randomUUID() }],
@@ -109,8 +118,9 @@ export const useFinanceStore = create<AppState>()(
                 goals: state.goals,
                 subscriptions: state.subscriptions,
                 currency: state.currency,
+                bitsoApiKeys: state.bitsoApiKeys,
                 // Don't persist userId to avoid issues with stale auth states
-                // Don't persist sync status
+                // Don't persist sync status or bitso syncing state
             } as AppState),
         }
     )

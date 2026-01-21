@@ -75,4 +75,9 @@ export interface AppState {
     syncStatus: 'synced' | 'syncing' | 'error' | 'offline';
     syncError: string | null;
     setSyncStatus: (status: 'synced' | 'syncing' | 'error' | 'offline', error?: string | null) => void;
+    // Bitso Integration
+    bitsoApiKeys: { key: string; secret: string } | null;
+    setBitsoKeys: (keys: { key: string; secret: string } | null) => void;
+    isBitsoSyncing: boolean;
+    setBitsoSyncing: (isSyncing: boolean) => void;
 }

@@ -7,6 +7,8 @@ import { useMarketData } from '../hooks/useMarketData';
 import { RefreshCcw, TrendingUp, TrendingDown } from 'lucide-react';
 import { clsx } from 'clsx';
 
+import { BitsoIntegration } from '../components/BitsoIntegration';
+
 export function Portfolio() {
     const { assets, removeAsset, updateAsset } = useFinanceStore();
     const { refreshPrices, isLoading, lastUpdated } = useMarketData();
@@ -60,7 +62,7 @@ export function Portfolio() {
     const totalStocksValue = stockAssets.reduce((sum, a) => sum + (a.quantity * a.currentPrice), 0);
 
     // Total Market Value
-    const totalPortfolioValueMXN = totalCryptoValue + totalStocksValue;
+    // const totalPortfolioValueMXN = totalCryptoValue + totalStocksValue; // Unused
 
     // Calculate Total Value in USD
     const totalCryptoValueUSD = cryptoAssets.reduce((sum, a) => sum + (a.quantity * (a.currentPriceUSD || 0)), 0);
@@ -83,7 +85,7 @@ export function Portfolio() {
         assetsToRemove.forEach(a => removeAsset(a.id));
     };
 
-    const handleUpdateAsset = (symbol: string, updates: any) => {
+    const handleUpdateAsset = (symbol: string, updates: Partial<typeof assets[0]>) => {
         // If updating price, update for all entries of this asset
         const assetsToUpdate = assets.filter(a => a.symbol === symbol);
         assetsToUpdate.forEach(a => updateAsset(a.id, updates));
@@ -108,6 +110,9 @@ export function Portfolio() {
                         >
                             <RefreshCcw size={14} className="text-primary" />
                         </button>
+                        <div className="ml-2 pl-2 border-l border-white/10">
+                            <BitsoIntegration />
+                        </div>
                     </div>
                 </div>
 
