@@ -80,4 +80,9 @@ export interface AppState {
     setBitsoKeys: (keys: { key: string; secret: string } | null) => void;
     isBitsoSyncing: boolean;
     setBitsoSyncing: (isSyncing: boolean) => void;
+    // IBKR Integration
+    ibkrCredentials: { token: string; queryId: string } | null;
+    setIbkrCredentials: (creds: { token: string; queryId: string } | null) => void;
+    isIbkrSyncing: boolean;
+    setIbkrSyncing: (isSyncing: boolean) => void;
 }

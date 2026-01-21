@@ -8,6 +8,7 @@ import { RefreshCcw, TrendingUp, TrendingDown } from 'lucide-react';
 import { clsx } from 'clsx';
 
 import { BitsoIntegration } from '../components/BitsoIntegration';
+import { IbkrIntegration } from '../components/IbkrIntegration';
 
 export function Portfolio() {
     const { assets, removeAsset, updateAsset } = useFinanceStore();
@@ -105,8 +106,9 @@ export function Portfolio() {
                         >
                             <RefreshCcw size={14} className="text-primary" />
                         </button>
-                        <div className="ml-2 pl-2 border-l border-white/10">
+                        <div className="ml-2 pl-2 border-l border-white/10 flex gap-2">
                             <BitsoIntegration />
+                            <IbkrIntegration />
                         </div>
                     </div>
                 </div>

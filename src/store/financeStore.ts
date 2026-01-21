@@ -29,6 +29,11 @@ export const useFinanceStore = create<AppState>()(
             setBitsoKeys: (keys) => set({ bitsoApiKeys: keys }),
             setBitsoSyncing: (isSyncing) => set({ isBitsoSyncing: isSyncing }),
 
+            ibkrCredentials: null,
+            isIbkrSyncing: false,
+            setIbkrCredentials: (creds) => set({ ibkrCredentials: creds }),
+            setIbkrSyncing: (isSyncing) => set({ isIbkrSyncing: isSyncing }),
+
             addTransaction: (transaction) =>
                 set((state) => ({
                     transactions: [...state.transactions, { ...transaction, id: crypto.randomUUID() }],
@@ -119,6 +124,7 @@ export const useFinanceStore = create<AppState>()(
                 subscriptions: state.subscriptions,
                 currency: state.currency,
                 bitsoApiKeys: state.bitsoApiKeys,
+                ibkrCredentials: state.ibkrCredentials,
                 // Don't persist userId to avoid issues with stale auth states
                 // Don't persist sync status or bitso syncing state
             } as AppState),
