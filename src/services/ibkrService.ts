@@ -68,6 +68,7 @@ export async function fetchIbkrPortfolio(config: IbkrConfig): Promise<Omit<Asset
                 quantity: parseFloat(pos.position || '0'),
                 avgBuyPrice: parseFloat(pos.costBasisPrice || '0'),
                 currentPrice: parseFloat(pos.markPrice || '0'),
+                currentPriceUSD: parseFloat(pos.markPrice || '0'),
             } as Omit<Asset, 'id'>;
         }).filter((asset) => asset.quantity !== 0);
 
@@ -84,7 +85,8 @@ export async function fetchIbkrPortfolio(config: IbkrConfig): Promise<Omit<Asset
                 type: 'stock',
                 quantity: 0.1674,
                 avgBuyPrice: 693.44,
-                currentPrice: 689.18
+                currentPrice: 689.18,
+                currentPriceUSD: 689.18
             },
             {
                 symbol: 'PHYS',
@@ -92,7 +94,8 @@ export async function fetchIbkrPortfolio(config: IbkrConfig): Promise<Omit<Asset
                 type: 'stock',
                 quantity: 2.1234,
                 avgBuyPrice: 33.29,
-                currentPrice: 36.98
+                currentPrice: 36.98,
+                currentPriceUSD: 36.98
             },
             {
                 symbol: 'PLTR',
@@ -100,7 +103,8 @@ export async function fetchIbkrPortfolio(config: IbkrConfig): Promise<Omit<Asset
                 type: 'stock',
                 quantity: 1.0059,
                 avgBuyPrice: 185.18,
-                currentPrice: 166.20
+                currentPrice: 166.20,
+                currentPriceUSD: 166.20
             },
             {
                 symbol: 'TSLA',
@@ -108,7 +112,8 @@ export async function fetchIbkrPortfolio(config: IbkrConfig): Promise<Omit<Asset
                 type: 'stock',
                 quantity: 0.4163,
                 avgBuyPrice: 459.54,
-                currentPrice: 434.00
+                currentPrice: 434.00,
+                currentPriceUSD: 434.00
             },
             {
                 symbol: 'URA',
@@ -116,8 +121,10 @@ export async function fetchIbkrPortfolio(config: IbkrConfig): Promise<Omit<Asset
                 type: 'stock',
                 quantity: 5.1314,
                 avgBuyPrice: 48.11,
-                currentPrice: 56.51
+                currentPrice: 56.51,
+                currentPriceUSD: 56.51
             }
         ];
     }
 }
+```
