@@ -58,11 +58,6 @@ export function Portfolio() {
     const stockAssets = groupAssets(stockAssetsRaw);
     const allAggregatedAssets = [...cryptoAssets, ...stockAssets];
 
-    const totalCryptoValue = cryptoAssets.reduce((sum, a) => sum + (a.quantity * a.currentPrice), 0);
-    const totalStocksValue = stockAssets.reduce((sum, a) => sum + (a.quantity * a.currentPrice), 0);
-
-    // Total Market Value
-    // const totalPortfolioValueMXN = totalCryptoValue + totalStocksValue; // Unused
 
     // Calculate Total Value in USD
     const totalCryptoValueUSD = cryptoAssets.reduce((sum, a) => sum + (a.quantity * (a.currentPriceUSD || 0)), 0);
