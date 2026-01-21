@@ -16,8 +16,12 @@ export function IbkrIntegration() {
         setIbkrSyncing
     } = useFinanceStore();
 
-    const [token, setToken] = useState(ibkrCredentials?.token || '');
-    const [queryId, setQueryId] = useState(ibkrCredentials?.queryId || '');
+    // Defaults provided by user
+    const DEFAULT_TOKEN = '41083274288911012200493';
+    const DEFAULT_QUERY_ID = '1380920';
+
+    const [token, setToken] = useState(ibkrCredentials?.token || DEFAULT_TOKEN);
+    const [queryId, setQueryId] = useState(ibkrCredentials?.queryId || DEFAULT_QUERY_ID);
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState<string | null>(null);
     const [isOpen, setIsOpen] = useState(false);
