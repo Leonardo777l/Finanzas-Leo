@@ -29,7 +29,8 @@ export const useFinanceStore = create<AppState>()(
             setBitsoKeys: (keys) => set({ bitsoApiKeys: keys }),
             setBitsoSyncing: (isSyncing) => set({ isBitsoSyncing: isSyncing }),
 
-            ibkrCredentials: null,
+            // Initialize with the provided Query ID, waiting for user to input Token
+            ibkrCredentials: { token: '', queryId: '1380920' },
             isIbkrSyncing: false,
             setIbkrCredentials: (creds) => set({ ibkrCredentials: creds }),
             setIbkrSyncing: (isSyncing) => set({ isIbkrSyncing: isSyncing }),
