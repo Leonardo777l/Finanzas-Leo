@@ -3,7 +3,7 @@ import { GlassCard } from './ui/GlassCard';
 import { formatCurrency } from '../lib/utils';
 import { CheckCircle2, Circle } from 'lucide-react';
 import { clsx } from 'clsx';
-import { Debt } from '../types';
+import type { Debt } from '../types';
 import { format, addMonths, parseISO, isSameMonth } from 'date-fns';
 import { es } from 'date-fns/locale';
 

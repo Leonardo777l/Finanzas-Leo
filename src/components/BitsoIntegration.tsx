@@ -17,6 +17,8 @@ export function BitsoIntegration() {
         setBitsoSyncing
     } = useFinanceStore();
 
+    const { refreshPrices } = useMarketData();
+
     const [key, setKey] = useState(bitsoApiKeys?.key || '');
     const [secret, setSecret] = useState(bitsoApiKeys?.secret || '');
     const [error, setError] = useState<string | null>(null);

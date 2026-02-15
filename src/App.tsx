@@ -8,6 +8,7 @@ import { Goals } from './pages/Goals';
 import { Subscriptions } from './pages/Subscriptions';
 import { CalendarView } from './pages/CalendarView';
 import { Distribution } from './pages/Distribution';
+import { Debts } from './pages/Debts';
 import { LoginPage } from './pages/LoginPage';
 import { useAuth } from './hooks/useAuth';
 import { useFinanceStore } from './store/financeStore';

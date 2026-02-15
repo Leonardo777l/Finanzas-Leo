@@ -44,7 +44,7 @@ fetch(`https://api.bitso.com/v3/balance/`, {
         const data = await res.json();
         console.log('Success:', data.success);
         if (data.payload && data.payload.balances) {
-            const nonZero = data.payload.balances.filter(b => parseFloat(b.total) > 0);
+            const nonZero = data.payload.balances.filter((b: any) => parseFloat(b.total) > 0);
             console.log('Non-zero balances:', nonZero);
         } else {
             console.log('Payload:', data);
