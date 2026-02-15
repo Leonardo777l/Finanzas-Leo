@@ -6,6 +6,9 @@ import { es } from 'date-fns/locale';
 import { ChevronLeft, ChevronRight, UserCircle, Truck, Wallet, Banknote } from 'lucide-react';
 import { formatCurrency } from '../lib/utils';
 import { SummaryCard } from '../components/SummaryCard';
+import { IncomeExpensesChart } from '../components/charts/IncomeExpensesChart';
+import { ExpenseBreakdownChart } from '../components/charts/ExpenseBreakdownChart';
+import { BalanceTrendChart } from '../components/charts/BalanceTrendChart';
 
 export function Dashboard() {
     const { transactions, currency } = useFinanceStore();
@@ -113,6 +116,15 @@ export function Dashboard() {
                 </p>
             </GlassCard>
 
-        </div>
+            {/* Statistical Charts Section */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 pb-8">
+                <IncomeExpensesChart />
+                <ExpenseBreakdownChart />
+                <div className="lg:col-span-2">
+                    <BalanceTrendChart />
+                </div>
+            </div>
+
+        </div >
     );
 }
