@@ -93,7 +93,59 @@ export const useFinanceStore = create<AppState>()(
                     subscriptions: state.subscriptions.filter((s) => s.id !== id),
                 })),
 
-            resetData: () => set({ transactions: [], assets: [], goals: [], subscriptions: [] }),
+            debts: [],
+
+            addDebt: (debt) =>
+                set((state) => ({
+                    debts: [...(state.debts || []), { ...debt, id: crypto.randomUUID() }],
+                })),
+
+            removeDebt: (id) =>
+                set((state) => ({
+                    debts: (state.debts || []).filter((d) => d.id !== id),
+                })),
+
+            payInstallment: (debtId, paymentDate) =>
+                set((state) => {
+                    const debts = state.debts || [];
+                    const debtToUpdate = debts.find((d) => d.id === debtId);
+
+                    if (!debtToUpdate) return {};
+
+                    // Prevent double payment for the same month - CHECK BOTH PAYMENTS AND TRANSACTIONS IF NEEDED
+                    // The 'payments' array is the source of truth for the debt progress
+                    if (debtToUpdate.payments.includes(paymentDate)) {
+                        return {};
+                    }
+
+                    // We also need to check if a transaction for this specific installment already exists to be safe
+                    // But relying on the 'payments' array check above should be sufficient if state is consistent.
+
+                    const updatedDebt = {
+                        ...debtToUpdate,
+                        installmentsPaid: debtToUpdate.installmentsPaid + 1,
+                        remainingAmount: debtToUpdate.remainingAmount - debtToUpdate.monthlyAmount,
+                        payments: [...debtToUpdate.payments, paymentDate],
+                    };
+
+                    // Automatically add expense transaction
+                    const newTransaction: any = {
+                        id: crypto.randomUUID(),
+                        date: new Date().toISOString(), // Or use paymentDate if we want to force the specific month
+                        description: `Pago ${updatedDebt.name} (${updatedDebt.installmentsPaid}/${updatedDebt.totalInstallments})`,
+                        amount: updatedDebt.monthlyAmount,
+                        type: 'expense',
+                        category: 'fixed', // Debts are usually fixed commitments
+                        tag: 'deudas'
+                    };
+
+                    return {
+                        debts: debts.map((d) => (d.id === debtId ? updatedDebt : d)),
+                        transactions: [...state.transactions, newTransaction]
+                    };
+                }),
+
+            resetData: () => set({ transactions: [], assets: [], goals: [], subscriptions: [], debts: [] }),
 
             importData: (json) => {
                 try {
@@ -123,6 +175,7 @@ export const useFinanceStore = create<AppState>()(
                 assets: state.assets,
                 goals: state.goals,
                 subscriptions: state.subscriptions,
+                debts: state.debts, // Persist debts
                 currency: state.currency,
                 bitsoApiKeys: state.bitsoApiKeys,
                 ibkrCredentials: state.ibkrCredentials,

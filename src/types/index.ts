@@ -50,11 +50,24 @@ export interface Subscription {
     icon?: string;
 }
 
+export interface Debt {
+    id: string;
+    name: string;
+    totalAmount: number;
+    remainingAmount: number;
+    totalInstallments: number;
+    installmentsPaid: number;
+    startDate: string; // ISO Date
+    monthlyAmount: number;
+    payments: string[]; // Array of dates (YYYY-MM) when payments were made
+}
+
 export interface AppState {
     transactions: Transaction[];
     assets: Asset[];
     goals: Goal[];
     subscriptions: Subscription[];
+    debts: Debt[];
     currency: string;
     userId: string | null;
     addTransaction: (transaction: Omit<Transaction, 'id'>) => void;
@@ -68,6 +81,9 @@ export interface AppState {
     removeGoal: (id: string) => void;
     addSubscription: (subscription: Omit<Subscription, 'id'>) => void;
     removeSubscription: (id: string) => void;
+    addDebt: (debt: Omit<Debt, 'id'>) => void;
+    removeDebt: (id: string) => void;
+    payInstallment: (debtId: string, paymentDate: string) => void;
     resetData: () => void;
     exportData: () => string;
     importData: (json: string) => void;

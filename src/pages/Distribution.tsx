@@ -38,14 +38,14 @@ export function Distribution() {
             .reduce((sum, t) => sum + t.amount, 0);
 
         // New Distribution Model:
-        // 45% - Gasto Corriente (Base)
-        // 15% - Ahorro
+        // 50% - Gasto Corriente (Base)
+        // 10% - Ahorro
         // 20% - Mudanza
         // 10% - LEO
         // 10% - FER
         const plan = {
-            currentExpenses: totalIncome * 0.45, // 45%
-            savings: totalIncome * 0.15,         // 15%
+            currentExpenses: totalIncome * 0.50, // 50%
+            savings: totalIncome * 0.10,         // 10%
             mudanza: totalIncome * 0.20,         // 20%
             leo: totalIncome * 0.10,             // 10%
             fer: totalIncome * 0.10,             // 10%
@@ -74,7 +74,7 @@ export function Distribution() {
                         Distribución de Ingresos
                     </h2>
                     <p className="text-muted-foreground mt-1">
-                        Modelo 45/20/15/10/10 - Gasto / Mudanza / Ahorro / Leo / Fer
+                        Modelo 50/20/10/10/10 - Gasto / Mudanza / Ahorro / Leo / Fer
                     </p>
                 </div>
 
@@ -144,14 +144,14 @@ export function Distribution() {
                     <div className="flex items-center justify-between mb-6">
                         <h3 className="font-semibold text-lg flex items-center gap-2">
                             <PieChart className="text-purple-400" size={20} />
-                            Gasto Corriente (45%)
+                            Gasto Corriente (50%)
                         </h3>
                     </div>
                     <div className="space-y-6">
                         {/* 50% Allowance vs Real Expenses */}
                         <div className="space-y-2">
                             <div className="flex justify-between text-sm">
-                                <span className="text-muted-foreground">Presupuesto (45%)</span>
+                                <span className="text-muted-foreground">Presupuesto (50%)</span>
                                 <span className="font-semibold text-purple-400">{formatCurrency(stats.plan.currentExpenses, currency)}</span>
                             </div>
                             <div className="flex justify-between text-sm">
@@ -188,7 +188,7 @@ export function Distribution() {
                 {/* Distribution Grid */}
                 <div className="grid grid-cols-2 gap-4">
                     <DistributionCard
-                        title="Ahorro (15%)"
+                        title="Ahorro (10%)"
                         amount={stats.plan.savings}
                         currency={currency}
                         icon={Wallet}

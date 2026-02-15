@@ -34,8 +34,8 @@ export function Dashboard() {
             leo: totalIncome * 0.10,
             fer: totalIncome * 0.10,
             mudanza: totalIncome * 0.20,
-            ahorro: totalIncome * 0.15,
-            gastoCorriente: totalIncome * 0.45,
+            ahorro: totalIncome * 0.10,
+            gastoCorriente: totalIncome * 0.50,
             totalIncome
         };
     }, [transactions, currentDate]);
@@ -91,14 +91,14 @@ export function Dashboard() {
                     delay={0.3}
                 />
                 <SummaryCard
-                    title="Ahorro (15%)"
+                    title="Ahorro (10%)"
                     amount={stats.ahorro}
                     icon={Wallet}
                     className="border-l-4 border-l-emerald-500"
                     delay={0.4}
                 />
                 <SummaryCard
-                    title="Gasto Cte. (45%)"
+                    title="Gasto Cte. (50%)"
                     amount={stats.gastoCorriente}
                     icon={Banknote}
                     className="border-l-4 border-l-white"

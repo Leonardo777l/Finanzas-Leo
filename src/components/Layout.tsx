@@ -1,5 +1,5 @@
 import { type ReactNode } from 'react';
-import { LayoutDashboard, Banknote, Wallet, TrendingUp, Settings, Menu, X, Target, CreditCard, CalendarDays, LogOut, PieChart } from 'lucide-react';
+import { LayoutDashboard, Banknote, Wallet, TrendingUp, Settings, Menu, X, Target, CreditCard, CalendarDays, LogOut, PieChart, Landmark } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
@@ -23,6 +23,7 @@ export function Layout({ children, activeTab, onTabChange }: LayoutProps) {
         { id: 'portfolio', label: 'Inversiones', icon: Wallet },
         { id: 'goals', label: 'Metas', icon: Target },
         { id: 'subscriptions', label: 'Suscripciones', icon: CreditCard },
+        { id: 'debts', label: 'Deudas', icon: Landmark },
         { id: 'cashflow', label: 'Flujo de Caja', icon: TrendingUp },
         { id: 'distribution', label: 'Distribución', icon: PieChart },
     ];

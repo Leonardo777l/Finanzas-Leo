@@ -30,11 +30,11 @@ export function SmartIncomeModal({ isOpen, onClose }: SmartIncomeModalProps) {
         };
 
         // 2. Create the Split Expenses
-        // New Model: Leo (10%), Fer (10%), Mudanza (20%), Ahorro (15%), Gasto Corriente (45%)
+        // New Model: Leo (10%), Fer (10%), Mudanza (20%), Ahorro (10%), Gasto Corriente (50%)
         const leoAmount = numAmount * 0.10;
         const ferAmount = numAmount * 0.10;
         const mudanzaAmount = numAmount * 0.20;
-        // Ahorro (15%) and Gasto Corriente (45%) remain in account
+        // Ahorro (10%) and Gasto Corriente (50%) remain in account
 
         const expenseTxs = [
             {
@@ -118,9 +118,9 @@ export function SmartIncomeModal({ isOpen, onClose }: SmartIncomeModalProps) {
                                     <div>Leo (10%): <span className="text-blue-400 font-mono">${(Number(amount) * 0.10).toFixed(2)}</span></div>
                                     <div>Fer (10%): <span className="text-pink-400 font-mono">${(Number(amount) * 0.10).toFixed(2)}</span></div>
                                     <div>Mudanza (20%): <span className="text-orange-400 font-mono">${(Number(amount) * 0.20).toFixed(2)}</span></div>
-                                    <div>Ahorro (15%): <span className="text-emerald-400 font-mono">${(Number(amount) * 0.15).toFixed(2)}</span></div>
+                                    <div>Ahorro (10%): <span className="text-emerald-400 font-mono">${(Number(amount) * 0.10).toFixed(2)}</span></div>
                                     <div className="col-span-2 border-t border-white/5 pt-2 mt-1">
-                                        Gasto Corriente (45%): <span className="text-white font-mono">${(Number(amount) * 0.45).toFixed(2)}</span>
+                                        Gasto Corriente (50%): <span className="text-white font-mono">${(Number(amount) * 0.50).toFixed(2)}</span>
                                     </div>
                                 </div>
                             </div>

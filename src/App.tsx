@@ -52,6 +52,7 @@ function App() {
       {activeTab === 'cashflow' && <CashFlow />}
       {activeTab === 'goals' && <Goals />}
       {activeTab === 'subscriptions' && <Subscriptions />}
+      {activeTab === 'debts' && <Debts />}
       {activeTab === 'distribution' && <Distribution />}
     </Layout>
   );
