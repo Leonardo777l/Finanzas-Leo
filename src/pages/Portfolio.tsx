@@ -66,10 +66,17 @@ export function Portfolio() {
     const totalPortfolioValueUSD = totalCryptoValueUSD + totalStocksValueUSD;
 
     // Total Cost Basis (Invested) - Assuming this is in USD as per user request
-    // "la inversión total siempre la hago en dolares" -> So totalInvested is basically USD cost basis if avgBuyPrice was entered in USD.
-    // However, previously avgBuyPrice might have been entered in MXN.
-    // Use stored avgBuyPrice. If user enters USD, it's USD.
     const totalInvested = assets.reduce((sum, a) => sum + (a.quantity * a.avgBuyPrice), 0);
+
+    // Calculate approximate exchange rate from available assets (MXN / USD)
+    const exchangeRate = allAggregatedAssets.reduce((rate, asset) => {
+        if (asset.currentPrice > 0 && asset.currentPriceUSD && asset.currentPriceUSD > 0) {
+            return asset.currentPrice / asset.currentPriceUSD;
+        }
+        return rate;
+    }, 20); // Fallback to 20 if no valid prices
+
+    const totalInvestedMXN = totalInvested * exchangeRate;
 
     // Total Return (USD based if invested is USD)
     const totalReturnUSD = totalPortfolioValueUSD - totalInvested;
@@ -114,10 +121,13 @@ export function Portfolio() {
                 </div>
 
                 <div className="flex gap-6 text-right">
-                    <div>
+                    <div className="flex flex-col items-end">
                         <p className="text-sm text-muted-foreground">Inversión Total (USD)</p>
                         <p className="text-lg font-semibold text-muted-foreground/80">
                             {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(totalInvested)}
+                        </p>
+                        <p className="text-xs text-muted-foreground mt-0.5">
+                            ≈ {new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN' }).format(totalInvestedMXN)}
                         </p>
                     </div>
                     <div>

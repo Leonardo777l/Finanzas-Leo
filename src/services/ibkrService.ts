@@ -83,8 +83,8 @@ export async function fetchIbkrPortfolio(config: IbkrConfig): Promise<Omit<Asset
                 symbol: 'IVV',
                 name: 'ISHARES CORE S&P 500 ETF',
                 type: 'stock',
-                quantity: 0.1674,
-                avgBuyPrice: 693.44,
+                quantity: 0.2174,
+                avgBuyPrice: 693.97,
                 currentPrice: 689.18,
                 currentPriceUSD: 689.18
             },
@@ -92,8 +92,8 @@ export async function fetchIbkrPortfolio(config: IbkrConfig): Promise<Omit<Asset
                 symbol: 'PHYS',
                 name: 'SPROTT PHYSICAL GOLD TRUST',
                 type: 'stock',
-                quantity: 2.1234,
-                avgBuyPrice: 33.29,
+                quantity: 3.1749,
+                avgBuyPrice: 34.92,
                 currentPrice: 36.98,
                 currentPriceUSD: 36.98
             },
@@ -101,8 +101,8 @@ export async function fetchIbkrPortfolio(config: IbkrConfig): Promise<Omit<Asset
                 symbol: 'PLTR',
                 name: 'PALANTIR TECHNOLOGIES INC-A',
                 type: 'stock',
-                quantity: 1.0059,
-                avgBuyPrice: 185.18,
+                quantity: 1.1559,
+                avgBuyPrice: 180.02,
                 currentPrice: 166.20,
                 currentPriceUSD: 166.20
             },
@@ -119,8 +119,8 @@ export async function fetchIbkrPortfolio(config: IbkrConfig): Promise<Omit<Asset
                 symbol: 'URA',
                 name: 'GLOBAL X URANIUM ETF',
                 type: 'stock',
-                quantity: 5.1314,
-                avgBuyPrice: 48.11,
+                quantity: 5.9632,
+                avgBuyPrice: 48.90,
                 currentPrice: 56.51,
                 currentPriceUSD: 56.51
             }
