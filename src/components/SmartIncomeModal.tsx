@@ -14,6 +14,8 @@ export function SmartIncomeModal({ isOpen, onClose }: SmartIncomeModalProps) {
     const [leoAmount, setLeoAmount] = useState('');
     const [ferAmount, setFerAmount] = useState('');
     const [bodaAmount, setBodaAmount] = useState('');
+    const [inversionAmount, setInversionAmount] = useState('');
+    const [gastoCorrienteAmount, setGastoCorrienteAmount] = useState('');
     const addTransactions = useFinanceStore((state) => state.addTransactions);
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -36,6 +38,8 @@ export function SmartIncomeModal({ isOpen, onClose }: SmartIncomeModalProps) {
         const lAmount = Number(leoAmount) || 0;
         const fAmount = Number(ferAmount) || 0;
         const bAmount = Number(bodaAmount) || 0;
+        const invAmount = Number(inversionAmount) || 0;
+        const gcAmount = Number(gastoCorrienteAmount) || 0;
 
         const expenseTxs = [];
         if (lAmount > 0) {
@@ -65,6 +69,24 @@ export function SmartIncomeModal({ isOpen, onClose }: SmartIncomeModalProps) {
                 category: 'fixed' as const,
             });
         }
+        if (invAmount > 0) {
+            expenseTxs.push({
+                date,
+                description: `Inversión: ${concept}`,
+                amount: invAmount,
+                type: 'expense' as const,
+                category: 'fixed' as const,
+            });
+        }
+        if (gcAmount > 0) {
+            expenseTxs.push({
+                date,
+                description: `Gasto Corriente: ${concept}`,
+                amount: gcAmount,
+                type: 'expense' as const,
+                category: 'fixed' as const,
+            });
+        }
 
         addTransactions([incomeTx, ...expenseTxs]);
 
@@ -73,6 +95,8 @@ export function SmartIncomeModal({ isOpen, onClose }: SmartIncomeModalProps) {
         setLeoAmount('');
         setFerAmount('');
         setBodaAmount('');
+        setInversionAmount('');
+        setGastoCorrienteAmount('');
         onClose();
     };
 
@@ -166,13 +190,39 @@ export function SmartIncomeModal({ isOpen, onClose }: SmartIncomeModalProps) {
                                             />
                                         </div>
                                     </div>
+                                    <div className="flex items-center gap-3">
+                                        <label className="text-xs text-purple-400 w-16">Inversión:</label>
+                                        <div className="relative flex-1">
+                                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-xs">$</span>
+                                            <input
+                                                type="number"
+                                                value={inversionAmount}
+                                                onChange={(e) => setInversionAmount(e.target.value)}
+                                                className="w-full bg-black/20 border border-white/10 rounded-lg pl-7 pr-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-purple-500/50 text-white"
+                                                placeholder="0.00"
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center gap-3">
+                                        <label className="text-xs text-emerald-400 w-[72px] shrink-0 leading-tight">Gasto Corriente:</label>
+                                        <div className="relative flex-1">
+                                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-xs">$</span>
+                                            <input
+                                                type="number"
+                                                value={gastoCorrienteAmount}
+                                                onChange={(e) => setGastoCorrienteAmount(e.target.value)}
+                                                className="w-full bg-black/20 border border-white/10 rounded-lg pl-7 pr-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-emerald-500/50 text-white"
+                                                placeholder="0.00"
+                                            />
+                                        </div>
+                                    </div>
                                 </div>
                                 
                                 {Number(amount) > 0 && (
                                     <div className="pt-3 border-t border-white/10 mt-3 text-xs flex justify-between">
                                         <span className="text-muted-foreground">Restante en cuenta:</span>
-                                        <span className={(Number(amount) - Number(leoAmount) - Number(ferAmount) - Number(bodaAmount)) < 0 ? "text-red-400 font-mono" : "text-emerald-400 font-mono"}>
-                                            ${(Number(amount) - Number(leoAmount) - Number(ferAmount) - Number(bodaAmount)).toFixed(2)}
+                                        <span className={(Number(amount) - Number(leoAmount) - Number(ferAmount) - Number(bodaAmount) - Number(inversionAmount) - Number(gastoCorrienteAmount)) < 0 ? "text-red-400 font-mono" : "text-emerald-400 font-mono"}>
+                                            ${(Number(amount) - Number(leoAmount) - Number(ferAmount) - Number(bodaAmount) - Number(inversionAmount) - Number(gastoCorrienteAmount)).toFixed(2)}
                                         </span>
                                     </div>
                                 )}
