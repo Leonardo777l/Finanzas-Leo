@@ -155,7 +155,8 @@ export const useFinanceStore = create<AppState>()(
                             transactions: data.transactions,
                             assets: data.assets,
                             goals: data.goals || [],
-                            subscriptions: data.subscriptions || []
+                            subscriptions: data.subscriptions || [],
+                            debts: data.debts || []
                         });
                     }
                 } catch (e) {
@@ -164,8 +165,8 @@ export const useFinanceStore = create<AppState>()(
             },
 
             exportData: () => {
-                const { transactions, assets, goals, subscriptions } = get();
-                return JSON.stringify({ transactions, assets, goals, subscriptions });
+                const { transactions, assets, goals, subscriptions, debts } = get();
+                return JSON.stringify({ transactions, assets, goals, subscriptions, debts });
             },
         }),
         {

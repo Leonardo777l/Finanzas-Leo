@@ -6,7 +6,7 @@ import { db } from '../lib/firebase';
 
 export function useFirestoreSync() {
     const { user } = useAuth();
-    const { transactions, assets, goals, subscriptions, currency, importData, setSyncStatus } = useFinanceStore();
+    const { transactions, assets, goals, subscriptions, debts, currency, importData, setSyncStatus } = useFinanceStore();
     const [isInitialized, setIsInitialized] = useState(false);
 
     // Load data from Firestore on login
@@ -59,6 +59,7 @@ export function useFirestoreSync() {
                     assets,
                     goals,
                     subscriptions,
+                    debts,
                     currency,
                     lastUpdated: new Date().toISOString()
                 }, { merge: true });
@@ -77,5 +78,5 @@ export function useFirestoreSync() {
         const timeoutId = setTimeout(saveData, 1000);
 
         return () => clearTimeout(timeoutId);
-    }, [user, isInitialized, transactions, assets, goals, subscriptions, currency, setSyncStatus]);
+    }, [user, isInitialized, transactions, assets, goals, subscriptions, debts, currency, setSyncStatus]);
 }

@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { AssetForm } from '../components/AssetForm';
 import { AssetList } from '../components/AssetList';
 import { AllocationChart } from '../components/AllocationChart';
@@ -13,6 +14,50 @@ import { IbkrIntegration } from '../components/IbkrIntegration';
 export function Portfolio() {
     const { assets, removeAsset, updateAsset } = useFinanceStore();
     const { refreshPrices, isLoading, lastUpdated } = useMarketData();
+
+    // One-time auto-import for the user's Bitso image data
+    useEffect(() => {
+        if (!localStorage.getItem('has_imported_bitso_images_2026')) {
+            const assetsToAdd = [
+                { symbol: 'SOL', name: 'SOL', type: 'crypto' as const, quantity: 0.00181719, avgBuyPrice: 0, currentPrice: 0 },
+                { symbol: 'ETH', name: 'ETH', type: 'crypto' as const, quantity: 0.01802472, avgBuyPrice: 0, currentPrice: 0 },
+                { symbol: 'BTC', name: 'BTC', type: 'crypto' as const, quantity: 0.00294377, avgBuyPrice: 0, currentPrice: 0 },
+                { symbol: 'XRP', name: 'XRP', type: 'crypto' as const, quantity: 121.900249, avgBuyPrice: 0, currentPrice: 0 },
+                { symbol: 'SHIB', name: 'SHIB', type: 'crypto' as const, quantity: 9171836.6, avgBuyPrice: 0, currentPrice: 0 },
+            ];
+            
+            setTimeout(() => {
+                const store = useFinanceStore.getState();
+                assetsToAdd.forEach(a => store.addAsset(a as any));
+                localStorage.setItem('has_imported_bitso_images_2026', 'true');
+                refreshPrices();
+            }, 3000); // Wait 3s for initial firebase sync to settle
+        }
+    }, [refreshPrices]);
+
+    // One-time auto-import for the user's IBKR image data and clear wrong SP500 entry
+    useEffect(() => {
+        if (!localStorage.getItem('has_imported_ibkr_images_2026_v1')) {
+            const store = useFinanceStore.getState();
+            
+            // Remove existing stock assets
+            const existingStocks = store.assets.filter(a => a.type === 'stock');
+            existingStocks.forEach(a => store.removeAsset(a.id));
+
+            const stocksToAdd = [
+                { symbol: 'IVV', name: 'iShares Core S&P 500 ETF', type: 'stock' as const, quantity: 0.2248, avgBuyPrice: 695.66, currentPrice: 158.79 / 0.2248, currentPriceUSD: 158.79 / 0.2248 },
+                { symbol: 'PHYS', name: 'Sprott Physical Gold Trust', type: 'stock' as const, quantity: 3.4519, avgBuyPrice: 35.11, currentPrice: 125.86 / 3.4519, currentPriceUSD: 125.86 / 3.4519 },
+                { symbol: 'PLTR', name: 'Palantir Technologies', type: 'stock' as const, quantity: 1.2029, avgBuyPrice: 179.19, currentPrice: 173.88 / 1.2029, currentPriceUSD: 173.88 / 1.2029 },
+                { symbol: 'TSLA', name: 'Tesla Inc', type: 'stock' as const, quantity: 0.4163, avgBuyPrice: 459.54, currentPrice: 162.51 / 0.4163, currentPriceUSD: 162.51 / 0.4163 },
+                { symbol: 'URA', name: 'Global X Uranium ETF', type: 'stock' as const, quantity: 6.1762, avgBuyPrice: 48.97, currentPrice: 343.15 / 6.1762, currentPriceUSD: 343.15 / 6.1762 },
+            ];
+
+            setTimeout(() => {
+                stocksToAdd.forEach(a => store.addAsset(a as any));
+                localStorage.setItem('has_imported_ibkr_images_2026_v1', 'true');
+            }, 3500); // executed slightly after bitso to prevent collision
+        }
+    }, [assets.length]);
 
     // Helper to group assets by symbol
     const groupAssets = (assetsToGroup: typeof assets) => {
@@ -164,6 +209,7 @@ export function Portfolio() {
                             <div className="mt-6">
                                 <AssetList
                                     assets={cryptoAssets}
+                                    globalTotalUSD={totalPortfolioValueUSD}
                                     onRemove={(id) => handleRemoveAsset(id.replace('agg-', ''))}
                                     onUpdate={(id, updates) => handleUpdateAsset(id.replace('agg-', ''), updates)}
                                 />
@@ -185,6 +231,7 @@ export function Portfolio() {
                             <div className="mt-6">
                                 <AssetList
                                     assets={stockAssets}
+                                    globalTotalUSD={totalPortfolioValueUSD}
                                     onRemove={(id) => handleRemoveAsset(id.replace('agg-', ''))}
                                     onUpdate={(id, updates) => handleUpdateAsset(id.replace('agg-', ''), updates)}
                                 />

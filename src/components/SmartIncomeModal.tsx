@@ -11,6 +11,9 @@ interface SmartIncomeModalProps {
 export function SmartIncomeModal({ isOpen, onClose }: SmartIncomeModalProps) {
     const [amount, setAmount] = useState('');
     const [concept, setConcept] = useState('');
+    const [leoAmount, setLeoAmount] = useState('');
+    const [ferAmount, setFerAmount] = useState('');
+    const [bodaAmount, setBodaAmount] = useState('');
     const addTransactions = useFinanceStore((state) => state.addTransactions);
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -30,40 +33,46 @@ export function SmartIncomeModal({ isOpen, onClose }: SmartIncomeModalProps) {
         };
 
         // 2. Create the Split Expenses
-        // New Model: Leo (10%), Fer (10%), Mudanza (20%), Ahorro (10%), Gasto Corriente (50%)
-        const leoAmount = numAmount * 0.10;
-        const ferAmount = numAmount * 0.10;
-        const mudanzaAmount = numAmount * 0.20;
-        // Ahorro (10%) and Gasto Corriente (50%) remain in account
+        const lAmount = Number(leoAmount) || 0;
+        const fAmount = Number(ferAmount) || 0;
+        const bAmount = Number(bodaAmount) || 0;
 
-        const expenseTxs = [
-            {
+        const expenseTxs = [];
+        if (lAmount > 0) {
+            expenseTxs.push({
                 date,
-                description: `Pago Leo (10%): ${concept}`,
-                amount: leoAmount,
+                description: `Pago Leo: ${concept}`,
+                amount: lAmount,
                 type: 'expense' as const,
                 category: 'fixed' as const,
-            },
-            {
+            });
+        }
+        if (fAmount > 0) {
+            expenseTxs.push({
                 date,
-                description: `Pago Fer (10%): ${concept}`,
-                amount: ferAmount,
+                description: `Pago Fer: ${concept}`,
+                amount: fAmount,
                 type: 'expense' as const,
                 category: 'fixed' as const,
-            },
-            {
+            });
+        }
+        if (bAmount > 0) {
+            expenseTxs.push({
                 date,
-                description: `Mudanza (20%): ${concept}`,
-                amount: mudanzaAmount,
+                description: `Boda: ${concept}`,
+                amount: bAmount,
                 type: 'expense' as const,
                 category: 'fixed' as const,
-            }
-        ];
+            });
+        }
 
         addTransactions([incomeTx, ...expenseTxs]);
 
         setAmount('');
         setConcept('');
+        setLeoAmount('');
+        setFerAmount('');
+        setBodaAmount('');
         onClose();
     };
 
@@ -112,17 +121,61 @@ export function SmartIncomeModal({ isOpen, onClose }: SmartIncomeModalProps) {
                                 />
                             </div>
 
-                            <div className="bg-emerald-500/5 border border-emerald-500/10 rounded-xl p-4 space-y-2">
-                                <p className="text-xs font-semibold text-emerald-400 mb-2">Distribución Automática:</p>
-                                <div className="grid grid-cols-2 gap-2 text-xs text-muted-foreground">
-                                    <div>Leo (10%): <span className="text-blue-400 font-mono">${(Number(amount) * 0.10).toFixed(2)}</span></div>
-                                    <div>Fer (10%): <span className="text-pink-400 font-mono">${(Number(amount) * 0.10).toFixed(2)}</span></div>
-                                    <div>Mudanza (20%): <span className="text-orange-400 font-mono">${(Number(amount) * 0.20).toFixed(2)}</span></div>
-                                    <div>Ahorro (10%): <span className="text-emerald-400 font-mono">${(Number(amount) * 0.10).toFixed(2)}</span></div>
-                                    <div className="col-span-2 border-t border-white/5 pt-2 mt-1">
-                                        Gasto Corriente (50%): <span className="text-white font-mono">${(Number(amount) * 0.50).toFixed(2)}</span>
+                            <div className="bg-white/5 border border-white/10 rounded-xl p-4 space-y-4">
+                                <div className="flex items-center justify-between">
+                                    <p className="text-sm font-semibold text-white">Distribución Manual</p>
+                                </div>
+                                
+                                <div className="space-y-3">
+                                    <div className="flex items-center gap-3">
+                                        <label className="text-xs text-blue-400 w-16">Leo:</label>
+                                        <div className="relative flex-1">
+                                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-xs">$</span>
+                                            <input
+                                                type="number"
+                                                value={leoAmount}
+                                                onChange={(e) => setLeoAmount(e.target.value)}
+                                                className="w-full bg-black/20 border border-white/10 rounded-lg pl-7 pr-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500/50 text-white"
+                                                placeholder="0.00"
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center gap-3">
+                                        <label className="text-xs text-pink-400 w-16">Fer:</label>
+                                        <div className="relative flex-1">
+                                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-xs">$</span>
+                                            <input
+                                                type="number"
+                                                value={ferAmount}
+                                                onChange={(e) => setFerAmount(e.target.value)}
+                                                className="w-full bg-black/20 border border-white/10 rounded-lg pl-7 pr-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-pink-500/50 text-white"
+                                                placeholder="0.00"
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center gap-3">
+                                        <label className="text-xs text-orange-400 w-16">Boda:</label>
+                                        <div className="relative flex-1">
+                                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-xs">$</span>
+                                            <input
+                                                type="number"
+                                                value={bodaAmount}
+                                                onChange={(e) => setBodaAmount(e.target.value)}
+                                                className="w-full bg-black/20 border border-white/10 rounded-lg pl-7 pr-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-orange-500/50 text-white"
+                                                placeholder="0.00"
+                                            />
+                                        </div>
                                     </div>
                                 </div>
+                                
+                                {Number(amount) > 0 && (
+                                    <div className="pt-3 border-t border-white/10 mt-3 text-xs flex justify-between">
+                                        <span className="text-muted-foreground">Restante en cuenta:</span>
+                                        <span className={(Number(amount) - Number(leoAmount) - Number(ferAmount) - Number(bodaAmount)) < 0 ? "text-red-400 font-mono" : "text-emerald-400 font-mono"}>
+                                            ${(Number(amount) - Number(leoAmount) - Number(ferAmount) - Number(bodaAmount)).toFixed(2)}
+                                        </span>
+                                    </div>
+                                )}
                             </div>
 
                             <button

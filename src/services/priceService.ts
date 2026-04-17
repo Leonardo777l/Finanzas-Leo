@@ -54,10 +54,11 @@ interface PriceResponse {
     [key: string]: {
         mxn: number;
         usd: number;
+        usd_24h_change?: number;
     };
 }
 
-export const fetchCryptoPrices = async (symbols: string[]): Promise<Record<string, { mxn: number, usd: number }>> => {
+export const fetchCryptoPrices = async (symbols: string[]): Promise<Record<string, { mxn: number, usd: number, usd_24h_change?: number }>> => {
     // 1. Map symbols to IDs
     const currentMap: Record<string, string> = {};
     const idsToFetch = new Set<string>();
@@ -75,14 +76,14 @@ export const fetchCryptoPrices = async (symbols: string[]): Promise<Record<strin
 
     try {
         const ids = Array.from(idsToFetch).join(',');
-        const response = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=mxn,usd`);
+        const response = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=mxn,usd&include_24hr_change=true`);
 
         if (!response.ok) {
             throw new Error('Failed to fetch prices');
         }
 
         const data: PriceResponse = await response.json();
-        const result: Record<string, { mxn: number, usd: number }> = {};
+        const result: Record<string, { mxn: number, usd: number, usd_24h_change?: number }> = {};
 
         // 2. Map back to symbols
         Object.keys(data).forEach(id => {
@@ -90,7 +91,8 @@ export const fetchCryptoPrices = async (symbols: string[]): Promise<Record<strin
             if (symbol) {
                 result[symbol] = {
                     mxn: data[id].mxn || 0,
-                    usd: data[id].usd || 0
+                    usd: data[id].usd || 0,
+                    usd_24h_change: data[id].usd_24h_change || 0
                 };
             }
         });
@@ -105,6 +107,6 @@ export const fetchCryptoPrices = async (symbols: string[]): Promise<Record<strin
 
 // Placeholder for stocks - specialized APIs usually require keys
 // For now, we'll return empty so the UI relies on manual entry or existing values
-export const fetchStockPrices = async (_symbols: string[]): Promise<Record<string, { mxn: number, usd: number }>> => {
+export const fetchStockPrices = async (_symbols: string[]): Promise<Record<string, { mxn: number, usd: number, usd_24h_change?: number }>> => {
     return {};
 };

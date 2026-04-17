@@ -36,6 +36,7 @@ export function useMarketData() {
                     const updates: Partial<typeof asset> = {};
                     if (prices.mxn !== asset.currentPrice) updates.currentPrice = prices.mxn;
                     if (prices.usd !== asset.currentPriceUSD) updates.currentPriceUSD = prices.usd;
+                    if (prices.usd_24h_change !== undefined && prices.usd_24h_change !== asset.priceChange24h) updates.priceChange24h = prices.usd_24h_change;
 
                     if (Object.keys(updates).length > 0) {
                         updateAsset(asset.id, updates);

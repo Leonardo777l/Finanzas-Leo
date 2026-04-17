@@ -20,6 +20,7 @@ export interface Asset {
     avgBuyPrice: number;
     currentPrice: number; // Manually updated or mocked
     currentPriceUSD?: number; // Optional: Price in USD
+    priceChange24h?: number; // Optional: 24h percentage change
 }
 
 export interface Budget {

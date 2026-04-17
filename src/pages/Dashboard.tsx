@@ -3,7 +3,7 @@ import { useFinanceStore } from '../store/financeStore';
 import { GlassCard } from '../components/ui/GlassCard';
 import { format, startOfMonth, endOfMonth, isWithinInterval, parseISO, subMonths, addMonths } from 'date-fns';
 import { es } from 'date-fns/locale';
-import { ChevronLeft, ChevronRight, UserCircle, Truck, Wallet, Banknote } from 'lucide-react';
+import { ChevronLeft, ChevronRight, UserCircle, Heart, Wallet, Banknote } from 'lucide-react';
 import { formatCurrency } from '../lib/utils';
 import { SummaryCard } from '../components/SummaryCard';
 import { IncomeExpensesChart } from '../components/charts/IncomeExpensesChart';
@@ -36,7 +36,7 @@ export function Dashboard() {
         return {
             leo: totalIncome * 0.10,
             fer: totalIncome * 0.10,
-            mudanza: totalIncome * 0.20,
+            boda: totalIncome * 0.20,
             ahorro: totalIncome * 0.10,
             gastoCorriente: totalIncome * 0.50,
             totalIncome
@@ -87,9 +87,9 @@ export function Dashboard() {
                     delay={0.2}
                 />
                 <SummaryCard
-                    title="Mudanza (20%)"
-                    amount={stats.mudanza}
-                    icon={Truck}
+                    title="Boda (20%)"
+                    amount={stats.boda}
+                    icon={Heart}
                     className="border-l-4 border-l-orange-500"
                     delay={0.3}
                 />

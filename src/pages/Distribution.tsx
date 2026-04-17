@@ -3,7 +3,7 @@ import { useFinanceStore } from '../store/financeStore';
 import { format, startOfMonth, endOfMonth, isWithinInterval, parseISO, subMonths, addMonths } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { motion } from 'framer-motion';
-import { PieChart, ChevronLeft, ChevronRight, Wallet, Banknote, Plus, Truck, UserCircle, TrendingUp } from 'lucide-react';
+import { PieChart, ChevronLeft, ChevronRight, Wallet, Banknote, Plus, Heart, UserCircle, TrendingUp } from 'lucide-react';
 import { GlassCard as Card } from '../components/ui/GlassCard';
 import { formatCurrency } from '../lib/utils';
 import { clsx } from 'clsx';
@@ -40,13 +40,13 @@ export function Distribution() {
         // New Distribution Model:
         // 50% - Gasto Corriente (Base)
         // 10% - Ahorro
-        // 20% - Mudanza
+        // 20% - Boda
         // 10% - LEO
         // 10% - FER
         const plan = {
             currentExpenses: totalIncome * 0.50, // 50%
             savings: totalIncome * 0.10,         // 10%
-            mudanza: totalIncome * 0.20,         // 20%
+            boda: totalIncome * 0.20,            // 20%
             leo: totalIncome * 0.10,             // 10%
             fer: totalIncome * 0.10,             // 10%
         };
@@ -74,7 +74,7 @@ export function Distribution() {
                         Distribución de Ingresos
                     </h2>
                     <p className="text-muted-foreground mt-1">
-                        Modelo 50/20/10/10/10 - Gasto / Mudanza / Ahorro / Leo / Fer
+                        Modelo 50/20/10/10/10 - Gasto / Boda / Ahorro / Leo / Fer
                     </p>
                 </div>
 
@@ -196,10 +196,10 @@ export function Distribution() {
                         bgColor="bg-emerald-400/10"
                     />
                     <DistributionCard
-                        title="Mudanza (20%)"
-                        amount={stats.plan.mudanza}
+                        title="Boda (20%)"
+                        amount={stats.plan.boda}
                         currency={currency}
-                        icon={Truck} // Reuse Truck if imported or use Gamepad2 as placeholder and fix imports next
+                        icon={Heart}
                         color="text-orange-400"
                         bgColor="bg-orange-400/10"
                     />
