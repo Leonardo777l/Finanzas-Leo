@@ -1,5 +1,4 @@
 import { useEffect } from 'react';
-import { AssetForm } from '../components/AssetForm';
 import { AssetList } from '../components/AssetList';
 import { AllocationChart } from '../components/AllocationChart';
 import { useFinanceStore } from '../store/financeStore';
@@ -17,19 +16,24 @@ export function Portfolio() {
 
     // One-time auto-import for the user's Bitso image data
     useEffect(() => {
-        if (!localStorage.getItem('has_imported_bitso_images_2026')) {
+        if (!localStorage.getItem('has_imported_bitso_images_2026_v2')) {
+            const store = useFinanceStore.getState();
+            
+            // Remove existing crypto assets
+            const existingCryptos = store.assets.filter(a => a.type === 'crypto');
+            existingCryptos.forEach(a => store.removeAsset(a.id));
+
             const assetsToAdd = [
-                { symbol: 'SOL', name: 'SOL', type: 'crypto' as const, quantity: 0.00181719, avgBuyPrice: 0, currentPrice: 0 },
-                { symbol: 'ETH', name: 'ETH', type: 'crypto' as const, quantity: 0.01802472, avgBuyPrice: 0, currentPrice: 0 },
-                { symbol: 'BTC', name: 'BTC', type: 'crypto' as const, quantity: 0.00294377, avgBuyPrice: 0, currentPrice: 0 },
-                { symbol: 'XRP', name: 'XRP', type: 'crypto' as const, quantity: 121.900249, avgBuyPrice: 0, currentPrice: 0 },
-                { symbol: 'SHIB', name: 'SHIB', type: 'crypto' as const, quantity: 9171836.6, avgBuyPrice: 0, currentPrice: 0 },
+                { symbol: 'RENDER', name: 'Render', type: 'crypto' as const, quantity: 353.31325747, avgBuyPrice: 0, currentPrice: 0 },
+                { symbol: 'BTC', name: 'Bitcoin', type: 'crypto' as const, quantity: 0.00833442, avgBuyPrice: 0, currentPrice: 0 },
+                { symbol: 'ETH', name: 'Ether', type: 'crypto' as const, quantity: 0.12886523, avgBuyPrice: 0, currentPrice: 0 },
+                { symbol: 'XRP', name: 'XRP', type: 'crypto' as const, quantity: 164.723173, avgBuyPrice: 0, currentPrice: 0 },
+                { symbol: 'SOL', name: 'Solana', type: 'crypto' as const, quantity: 0.21905838, avgBuyPrice: 0, currentPrice: 0 },
             ];
             
             setTimeout(() => {
-                const store = useFinanceStore.getState();
                 assetsToAdd.forEach(a => store.addAsset(a as any));
-                localStorage.setItem('has_imported_bitso_images_2026', 'true');
+                localStorage.setItem('has_imported_bitso_images_2026_v2', 'true');
                 refreshPrices();
             }, 3000); // Wait 3s for initial firebase sync to settle
         }
@@ -203,10 +207,8 @@ export function Portfolio() {
                                 {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(totalCryptoValueUSD)}
                             </span>
                         </div>
-                        <GlassCard delay={0.1}>
-                            <p className="text-sm text-muted-foreground mb-4">Agrega activos como BTC, ETH, XRP, RENDER, LINK, SOL</p>
-                            <AssetForm type="crypto" />
-                            <div className="mt-6">
+                        <GlassCard delay={0.1} className="overflow-hidden">
+                            <div className="mt-2">
                                 <AssetList
                                     assets={cryptoAssets}
                                     globalTotalUSD={totalPortfolioValueUSD}
@@ -225,10 +227,8 @@ export function Portfolio() {
                                 {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(totalStocksValueUSD)}
                             </span>
                         </div>
-                        <GlassCard delay={0.2}>
-                            <p className="text-sm text-muted-foreground mb-4">Agrega activos como URA, PLTR, TSLA, SP500</p>
-                            <AssetForm type="stock" />
-                            <div className="mt-6">
+                        <GlassCard delay={0.2} className="overflow-hidden">
+                            <div className="mt-2">
                                 <AssetList
                                     assets={stockAssets}
                                     globalTotalUSD={totalPortfolioValueUSD}
