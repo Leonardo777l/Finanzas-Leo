@@ -16,24 +16,25 @@ export function Portfolio() {
 
     // One-time auto-import for the user's Bitso image data
     useEffect(() => {
-        if (!localStorage.getItem('has_imported_bitso_images_2026_v2')) {
-            const store = useFinanceStore.getState();
-            
-            // Remove existing crypto assets
-            const existingCryptos = store.assets.filter(a => a.type === 'crypto');
-            existingCryptos.forEach(a => store.removeAsset(a.id));
-
-            const assetsToAdd = [
-                { symbol: 'RENDER', name: 'Render', type: 'crypto' as const, quantity: 353.31325747, avgBuyPrice: 0, currentPrice: 0 },
-                { symbol: 'BTC', name: 'Bitcoin', type: 'crypto' as const, quantity: 0.00833442, avgBuyPrice: 0, currentPrice: 0 },
-                { symbol: 'ETH', name: 'Ether', type: 'crypto' as const, quantity: 0.12886523, avgBuyPrice: 0, currentPrice: 0 },
-                { symbol: 'XRP', name: 'XRP', type: 'crypto' as const, quantity: 164.723173, avgBuyPrice: 0, currentPrice: 0 },
-                { symbol: 'SOL', name: 'Solana', type: 'crypto' as const, quantity: 0.21905838, avgBuyPrice: 0, currentPrice: 0 },
-            ];
+        if (!localStorage.getItem('has_imported_bitso_images_2026_v3')) {
+            localStorage.setItem('has_imported_bitso_images_2026_v3', 'true');
             
             setTimeout(() => {
+                const store = useFinanceStore.getState();
+                
+                // Remove existing crypto assets to ensure no duplicates
+                const existingCryptos = store.assets.filter(a => a.type === 'crypto');
+                existingCryptos.forEach(a => store.removeAsset(a.id));
+
+                const assetsToAdd = [
+                    { symbol: 'RENDER', name: 'Render', type: 'crypto' as const, quantity: 353.31325747, avgBuyPrice: 0, currentPrice: 0 },
+                    { symbol: 'BTC', name: 'Bitcoin', type: 'crypto' as const, quantity: 0.00833442, avgBuyPrice: 0, currentPrice: 0 },
+                    { symbol: 'ETH', name: 'Ether', type: 'crypto' as const, quantity: 0.12886523, avgBuyPrice: 0, currentPrice: 0 },
+                    { symbol: 'XRP', name: 'XRP', type: 'crypto' as const, quantity: 164.723173, avgBuyPrice: 0, currentPrice: 0 },
+                    { symbol: 'SOL', name: 'Solana', type: 'crypto' as const, quantity: 0.21905838, avgBuyPrice: 0, currentPrice: 0 },
+                ];
+                
                 assetsToAdd.forEach(a => store.addAsset(a as any));
-                localStorage.setItem('has_imported_bitso_images_2026_v2', 'true');
                 refreshPrices();
             }, 3000); // Wait 3s for initial firebase sync to settle
         }
@@ -41,27 +42,28 @@ export function Portfolio() {
 
     // One-time auto-import for the user's IBKR image data and clear wrong SP500 entry
     useEffect(() => {
-        if (!localStorage.getItem('has_imported_ibkr_images_2026_v1')) {
-            const store = useFinanceStore.getState();
+        if (!localStorage.getItem('has_imported_ibkr_images_2026_v2')) {
+            localStorage.setItem('has_imported_ibkr_images_2026_v2', 'true');
             
-            // Remove existing stock assets
-            const existingStocks = store.assets.filter(a => a.type === 'stock');
-            existingStocks.forEach(a => store.removeAsset(a.id));
-
-            const stocksToAdd = [
-                { symbol: 'IVV', name: 'iShares Core S&P 500 ETF', type: 'stock' as const, quantity: 0.2248, avgBuyPrice: 695.66, currentPrice: 158.79 / 0.2248, currentPriceUSD: 158.79 / 0.2248 },
-                { symbol: 'PHYS', name: 'Sprott Physical Gold Trust', type: 'stock' as const, quantity: 3.4519, avgBuyPrice: 35.11, currentPrice: 125.86 / 3.4519, currentPriceUSD: 125.86 / 3.4519 },
-                { symbol: 'PLTR', name: 'Palantir Technologies', type: 'stock' as const, quantity: 1.2029, avgBuyPrice: 179.19, currentPrice: 173.88 / 1.2029, currentPriceUSD: 173.88 / 1.2029 },
-                { symbol: 'TSLA', name: 'Tesla Inc', type: 'stock' as const, quantity: 0.4163, avgBuyPrice: 459.54, currentPrice: 162.51 / 0.4163, currentPriceUSD: 162.51 / 0.4163 },
-                { symbol: 'URA', name: 'Global X Uranium ETF', type: 'stock' as const, quantity: 6.1762, avgBuyPrice: 48.97, currentPrice: 343.15 / 6.1762, currentPriceUSD: 343.15 / 6.1762 },
-            ];
-
             setTimeout(() => {
+                const store = useFinanceStore.getState();
+                
+                // Remove existing stock assets to ensure no duplicates
+                const existingStocks = store.assets.filter(a => a.type === 'stock');
+                existingStocks.forEach(a => store.removeAsset(a.id));
+
+                const stocksToAdd = [
+                    { symbol: 'IVV', name: 'iShares Core S&P 500 ETF', type: 'stock' as const, quantity: 0.2248, avgBuyPrice: 695.66, currentPrice: 158.79 / 0.2248, currentPriceUSD: 158.79 / 0.2248 },
+                    { symbol: 'PHYS', name: 'Sprott Physical Gold Trust', type: 'stock' as const, quantity: 3.4519, avgBuyPrice: 35.11, currentPrice: 125.86 / 3.4519, currentPriceUSD: 125.86 / 3.4519 },
+                    { symbol: 'PLTR', name: 'Palantir Technologies', type: 'stock' as const, quantity: 1.2029, avgBuyPrice: 179.19, currentPrice: 173.88 / 1.2029, currentPriceUSD: 173.88 / 1.2029 },
+                    { symbol: 'TSLA', name: 'Tesla Inc', type: 'stock' as const, quantity: 0.4163, avgBuyPrice: 459.54, currentPrice: 162.51 / 0.4163, currentPriceUSD: 162.51 / 0.4163 },
+                    { symbol: 'URA', name: 'Global X Uranium ETF', type: 'stock' as const, quantity: 6.1762, avgBuyPrice: 48.97, currentPrice: 343.15 / 6.1762, currentPriceUSD: 343.15 / 6.1762 },
+                ];
+
                 stocksToAdd.forEach(a => store.addAsset(a as any));
-                localStorage.setItem('has_imported_ibkr_images_2026_v1', 'true');
             }, 3500); // executed slightly after bitso to prevent collision
         }
-    }, [assets.length]);
+    }, []);
 
     // Helper to group assets by symbol
     const groupAssets = (assetsToGroup: typeof assets) => {
